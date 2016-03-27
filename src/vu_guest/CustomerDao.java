@@ -32,7 +32,7 @@ public class CustomerDao implements DAOConnection{
     Vector<CustomerEnity> cuscollection;
     
     public CustomerDao(){
-        db=new DbConnect("sa", "root");
+        db=new DbConnect("sa", "");
         db.createConnect();
         st=db.getStsm();
         con=db.getCon();
@@ -58,7 +58,7 @@ public class CustomerDao implements DAOConnection{
                 
                 cus=new CustomerEnity(identifier, fullname, gender, company, address, phone, email, status, age, cusID);
                 cuscollection.add(cus);
-               
+                
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,6 +70,7 @@ public class CustomerDao implements DAOConnection{
 
     @Override
     public void insert(Object obj) {
+        
         try {
             CustomerEnity objCus = (CustomerEnity) obj;
             sql = "insert into Customer([Person Identifier],fullname,gender,company,address,phone,email,status,DOB) "
@@ -103,7 +104,6 @@ public class CustomerDao implements DAOConnection{
 //            System.out.println(customer.toString());
 //        }
 //    }
-
 
     @Override
     public Vector<Object> search(String sString) {

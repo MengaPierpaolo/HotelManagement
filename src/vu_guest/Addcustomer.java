@@ -6,9 +6,13 @@
 package vu_guest;
 
 
+import connection.DbConnect;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.sql.Date;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Date;
 
 
 
@@ -16,8 +20,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import projectinterface.CentralInterface;
 import projectinterface.DAOConnection;
-import sun.security.x509.CertificateSubjectName;
-import sun.security.x509.DeltaCRLIndicatorExtension;
 
 /**
  *
@@ -28,18 +30,32 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
     /**
      * Creates new form Addcustomer
      */
-
         CustomerEnity cusenity;
         CustomerDao cusDao;
         DefaultComboBoxModel cmModel;
-        String identifier,fullname ,gen, address ,company , phone , email, status ;
+        String fullname,gen,address,company,phone,email,status,identifier;
+        Date dob;
+        int pphone,iidentifier;
+        DbConnect db;
+        Connection con;
+        Statement st;
+        ResultSet rs;
+        String sql;
+        int cusid;
         public Addcustomer(java.awt.Frame parent, boolean modal) {
             super(parent, modal);
             initComponents();
             setTitle("Add Customer");
+            db=new DbConnect("sa", "");
+            db.createConnect();
+            con = db.getCon();
+            st = db.getStsm();
             cmModel = new DefaultComboBoxModel(new Object[] {"New","Old"});
             cmStatus.setModel(cmModel);
             formDisplayCentral();
+//            showData();
+            
+            
         }
 
     
@@ -301,20 +317,23 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
     private void btnAddPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPayActionPerformed
         //identifier,fullname,gender,company,address,phone,email,status;
-        identifier= tidentifier.getText();
         fullname = tname.getText();
+        identifier= tidentifier.getText();
+        dob=new java.util.Date();
+        java.sql.Date age = new java.sql.Date(dob.getTime());
         gen = (tmale.isSelected())?"Male": "Female";
         address = taAdrress.getText();
         company = tcompany.getText();
         phone = tphone.getText();
         email = temail.getText();
         status = cmStatus.getSelectedItem().toString();
+        if(!checkEmptyField())return;
         //Date age = tage.getDateFormatString();
-        if(!checkEmptyField()) return;
-        cusenity = new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, new Date(12134242));
+        
+        cusenity = new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age);
         cusDao = new CustomerDao();
         cusDao.insert((Object) cusenity);
-        JOptionPane.showMessageDialog(this, fullname + " added succeefully");
+        JOptionPane.showMessageDialog(this,"Add succesfully");
     }//GEN-LAST:event_btnAddPayActionPerformed
 
     /**
@@ -397,20 +416,63 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         if(this.getSize().width!= screenSize.width && this.getSize().height!=screenSize.height)
         setLocation((screenSize.width-w)/2, (screenSize.height-h)/2);
     }
-
-    @Override
-    public boolean checkEmptyField() {
-        while (fullname.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Name is not blank");
-            return false;
-        }
-        return true;
-    }
+    
+    
 
     @Override
     public void showData() {
-        
+        try {
+            sql="select * from Customer";
+            rs=st.executeQuery(sql);
+            while(rs.next()){
+               
+//                identifier=rs.getString(2);
+//                dob=rs.getDate(3);
+//                fullname=rs.getString(4);
+//                gen=rs.getString(5);
+//                company=rs.getString(6);
+//                address=rs.getString(7);
+//                status=rs.getString(8);
+//                phone=rs.getString(9);
+//                email=rs.getString(10);
+                cusenity=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, dob, cusid);
+                tname.setText(fullname);
+                tidentifier.setText(identifier);
+                tage.setDate(dob);
+                taAdrress.setText(address);
+                cmStatus.setSelectedItem(status);
+                tphone.setText(phone);
+                temail.setText(email);
+                tcompany.setText(company);
+                if(gen.equals("Male")){
+                        tmale.setSelected(true);
+                    }else{
+                        tfemale.setSelected(true);
+                    }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    @Override
+    public boolean checkEmptyField() {
+        if(fullname.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Name cannot blank");
+            tname.grabFocus();
+            return false;
+                    
+        }
+        if(identifier.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Identifier cannot blank");
+            tidentifier.grabFocus();
+            return false;
+        }
+        
+        return true;
+    }
+
+    
 
 
 }
