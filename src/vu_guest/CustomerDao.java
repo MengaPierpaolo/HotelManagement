@@ -7,7 +7,7 @@ package vu_guest;
 
 import connection.DbConnect;
 import java.sql.Connection;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -103,4 +103,10 @@ public class CustomerDao implements DAOConnection{
 //            System.out.println(customer.toString());
 //        }
 //    }
+
+
+    @Override
+    public Vector<Object> search(String sString) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

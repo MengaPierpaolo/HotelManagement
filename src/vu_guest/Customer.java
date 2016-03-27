@@ -240,8 +240,8 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
     }
 
     @Override
-    public void checkEmptyField() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean checkEmptyField() {
+        return false;
     }
 
     @Override

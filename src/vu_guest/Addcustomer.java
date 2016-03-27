@@ -16,6 +16,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import projectinterface.CentralInterface;
 import projectinterface.DAOConnection;
+import sun.security.x509.CertificateSubjectName;
+import sun.security.x509.DeltaCRLIndicatorExtension;
 
 /**
  *
@@ -30,7 +32,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         CustomerEnity cusenity;
         CustomerDao cusDao;
         DefaultComboBoxModel cmModel;
-
+        String identifier,fullname ,gen, address ,company , phone , email, status ;
         public Addcustomer(java.awt.Frame parent, boolean modal) {
             super(parent, modal);
             initComponents();
@@ -299,15 +301,16 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
     private void btnAddPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPayActionPerformed
         //identifier,fullname,gender,company,address,phone,email,status;
-        String identifier= tidentifier.getText();
-        String fullname = tname.getText();
-        String gen = (tmale.isSelected())?"Male": "Female";
-        String address = taAdrress.getText();
-        String company = tcompany.getText();
-        String phone = tphone.getText();
-        String email = temail.getText();
-        String status = cmStatus.getSelectedItem().toString();
+        identifier= tidentifier.getText();
+        fullname = tname.getText();
+        gen = (tmale.isSelected())?"Male": "Female";
+        address = taAdrress.getText();
+        company = tcompany.getText();
+        phone = tphone.getText();
+        email = temail.getText();
+        status = cmStatus.getSelectedItem().toString();
         //Date age = tage.getDateFormatString();
+        if(!checkEmptyField()) return;
         cusenity = new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, new Date(12134242));
         cusDao = new CustomerDao();
         cusDao.insert((Object) cusenity);
@@ -396,8 +399,12 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
     }
 
     @Override
-    public void checkEmptyField() {
-
+    public boolean checkEmptyField() {
+        while (fullname.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Name is not blank");
+            return false;
+        }
+        return true;
     }
 
     @Override
