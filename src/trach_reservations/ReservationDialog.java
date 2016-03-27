@@ -10,7 +10,9 @@ import java.awt.Toolkit;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
 import projectinterface.CentralInterface;
+import vu_guest.CustomerEnity;
 
 /**
  *
@@ -20,25 +22,31 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
     
     DateFormat df = DateFormat.getDateInstance();
     Date date;
-    
+    DefaultComboBoxModel cmModel;
     /**
      * Creates new form ReservationDialog
      */
-    public ReservationDialog(java.awt.Frame parent, boolean modal, Vector re) {
+    public ReservationDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setTitle("Add new reservation");
         date = new Date();
         datBook.setDate(date);
-        if(re !=null){
-           txtName.setText(re.get(1).toString());
-           txtIdentify.setText(re.get(2).toString());
-           txtPhone.setText(re.get(3).toString());
-           txtEmail.setText(re.get(4).toString());
-        }
+        cmModel = new DefaultComboBoxModel(new Object[]{"New","Comfirm","Cancel"});
+        cmStatus.setModel(cmModel);
         formDisplayCentral();
+        revalidate();
+        repaint();
     }
+    public void setCustomerFiled(CustomerEnity cusObj){
+        if(cusObj !=null){
+           txtName.setText(cusObj.getFullname());
+           txtIdentify.setText(cusObj.getIdentifier());
+           txtPhone.setText(cusObj.getPhone());
+           txtEmail.setText(cusObj.getEmail());
+        }
 
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -53,8 +61,6 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         cmStatus = new javax.swing.JComboBox<>();
-        jLabel13 = new javax.swing.JLabel();
-        txtUser = new javax.swing.JTextField();
         datBook = new com.toedter.calendar.JDateChooser();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -101,6 +107,11 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Common Information"));
 
@@ -109,8 +120,6 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         jLabel4.setText("Status");
 
         cmStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel13.setText("User");
 
         datBook.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
@@ -131,30 +140,23 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(datBook, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
-                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
+                .addGap(27, 27, 27)
                 .addComponent(jLabel4)
                 .addGap(31, 31, 31)
                 .addComponent(cmStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33))
+                .addContainerGap(334, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(3, 3, 3))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(datBook, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtUser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel4)
-                        .addComponent(cmStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(datBook, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
@@ -434,8 +436,12 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
     }//GEN-LAST:event_datBookAncestorAdded
 
     private void btnSearchCusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchCusActionPerformed
-        new SearchCustomer(null, true).setVisible(true);
+        new SearchCustomer(null, true, this).setVisible(true);
     }//GEN-LAST:event_btnSearchCusActionPerformed
+
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+
+    }//GEN-LAST:event_formFocusGained
 
     /**
      * @param args the command line arguments
@@ -467,7 +473,7 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ReservationDialog dialog = new ReservationDialog(new javax.swing.JFrame(), true, null);
+                ReservationDialog dialog = new ReservationDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -493,7 +499,6 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
     private com.toedter.calendar.JDateChooser datCheckIn;
     private com.toedter.calendar.JDateChooser datCheckOut;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
@@ -519,7 +524,6 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPhone;
     private javax.swing.JTextField txtRoom;
-    private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -532,13 +536,15 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         setLocation((screenSize.width-w)/2, (screenSize.height-h)/2);
     }
 
-    @Override
-    public void checkEmptyField() {
 
-    }
 
     @Override
     public void showData() {
 
+    }
+
+    @Override
+    public boolean checkEmptyField() {
+        return false;
     }
 }

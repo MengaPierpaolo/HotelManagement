@@ -11,17 +11,18 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import projectinterface.CentralInterface;
-
+import vu_guest.CustomerEnity;
+import java.sql.Date;
 
 /**
  *
@@ -37,11 +38,18 @@ public class SearchCustomer extends javax.swing.JDialog implements CentralInterf
     String sql;
     Vector rHeader, rData, row;
     Vector customers, send; 
-    String cusid, cusname, phone, email, identifier;
+    CustomerEnity cusObj;
+    String cusid, cusname, phone, email, identifier,  gender,company,adrress,status;
+    Date dob;
     HashMap<String, Vector> result;
-    public SearchCustomer(java.awt.Frame parent, boolean modal) {
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+    ///khai bao
+    ReservationDialog p;
+    public SearchCustomer(java.awt.Frame parent, boolean modal, ReservationDialog p) {
         super(parent, modal);
         initComponents();
+        this.p = p;
+        
         tblCus.getTableHeader().setPreferredSize(new Dimension(1200, 20));
         setTitle("Search Customer");
         db= new DbConnect("sa", "root");
@@ -76,8 +84,8 @@ public class SearchCustomer extends javax.swing.JDialog implements CentralInterf
     }
 
     @Override
-    public void checkEmptyField() {
-
+    public boolean checkEmptyField() {
+        return false;
     }
 
     @Override
@@ -423,31 +431,34 @@ public class SearchCustomer extends javax.swing.JDialog implements CentralInterf
     }//GEN-LAST:event_txtPhoneCaretUpdate
 
     private void tblCusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCusMouseClicked
-        int row = tblCus.getSelectedRow();
-        if(row==-1){
-            JOptionPane.showMessageDialog(this, "No row selected");
-            return;
-        }
-        cusid = String.valueOf(tblCus.getValueAt(row, 0));
-        cusname = (String) tblCus.getValueAt(row, 3);
-        phone = (String) tblCus.getValueAt(row, 8);
-        identifier = (String) tblCus.getValueAt(row, 1);
-        email = (String) tblCus.getValueAt(row, 9);
-        send = new Vector();
-        send.add(cusid);
-        send.add(cusname);
-        send.add(phone);
-        send.add(identifier);
-        send.add(email);
+
+            int row = tblCus.getSelectedRow();
+            if(row==-1){
+                JOptionPane.showMessageDialog(this, "No row selected");
+                return;
+            }
+            cusid = String.valueOf(tblCus.getValueAt(row, 0));
+            cusname = (String) tblCus.getValueAt(row, 3);
+            dob = (java.sql.Date)tblCus.getValueAt(row, 2);
+            //java.sql.Date sqlDate = new java.sql.Date(formatter.parse(dob).getTime());
+            gender =(String) tblCus.getValueAt(row, 4);
+            company =(String) tblCus.getValueAt(row, 5);
+            adrress =(String) tblCus.getValueAt(row, 6);
+            status =(String) tblCus.getValueAt(row, 7);
+            phone = (String) tblCus.getValueAt(row, 8);
+            identifier = (String) tblCus.getValueAt(row, 1);
+            email = (String) tblCus.getValueAt(row, 9);
+            cusObj = new CustomerEnity(identifier, cusname, gender, company, adrress, phone, email, status, dob, Integer.parseInt(cusid));
+        
     }//GEN-LAST:event_tblCusMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(send.isEmpty()){
-            JOptionPane.showMessageDialog(this, "No row selected");
+        if(cusObj==null){
             return;
         }
+        p.setCustomerFiled(cusObj);
         setVisible(false);
-        new ReservationDialog(null, true, send);
+        
     }//GEN-LAST:event_jButton1ActionPerformed
     
     /**
@@ -480,7 +491,7 @@ public class SearchCustomer extends javax.swing.JDialog implements CentralInterf
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                SearchCustomer dialog = new SearchCustomer(new javax.swing.JFrame(), true);
+                SearchCustomer dialog = new SearchCustomer(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
