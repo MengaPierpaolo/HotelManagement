@@ -49,7 +49,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
             super(parent, modal);
             initComponents();
             setTitle("Add Customer");
-            db=new DbConnect("sa", "");
+            db=new DbConnect("sa", "root");
             db.createConnect();
             con = db.getCon();
             st = db.getStsm();

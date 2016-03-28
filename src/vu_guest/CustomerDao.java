@@ -32,7 +32,7 @@ public class CustomerDao implements DAOConnection{
     Vector<CustomerEnity> cuscollection;
     
     public CustomerDao(){
-        db=new DbConnect("sa", "");
+        db=new DbConnect("sa", "root");
         db.createConnect();
         st=db.getStsm();
         con=db.getCon();
@@ -90,9 +90,8 @@ public class CustomerDao implements DAOConnection{
     public void update(Object obj) {
         try {
             CustomerEnity objCus = (CustomerEnity) obj;
-              sql="Update Customer set [Person Identifier]='"+objCus.getIdentifier()+"',fullname="+objCus.getFullname()+",gender="+objCus.getGender()
-                        +",company="+objCus.getCompany()+",email="+objCus.getEmail()+",DOB="+objCus.getAge()+",status="+objCus.getStatus()+",address="+objCus.getAddress()
-                      +",phone ="+objCus.getPhone()+" where CustomerID='"+objCus.getCusID()+"'";
+              sql="Update Customer set [Person Identifier]='"+objCus.getIdentifier()+"' ,fullname='"+objCus.getFullname()+"' ,gender= '"+objCus.getGender()+"' ,company='"+objCus.getCompany()+"' ,email='"+objCus.getEmail()+"',DOB="+objCus.getAge()+",status='"+objCus.getStatus()+"',address='"+objCus.getAddress()
+                      +"',phone ='"+objCus.getPhone()+"' where CustomerID="+objCus.getCusID();
        
             st.executeUpdate(sql);
         } catch (SQLException ex) {
@@ -104,19 +103,20 @@ public class CustomerDao implements DAOConnection{
     public void delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-//    public static void main(String[] args) {
-//        CustomerDao cusDAO = new CustomerDao();
-//        Vector<CustomerEnity> collection = cusDAO.getCollection();
-//        for (CustomerEnity customer : collection) {
-//            System.out.println(customer.toString());
-//        }
-//        CustomerEnity objCus = new CustomerEnity("00000000", "Lai Van Trach", "M", "Neilsen", "Ha huy giap -Q12-HCM", "01283477050", "laivantrachg@mail", "New", new Date(152000));
+    public static void main(String[] args) {
+        CustomerDao cusDAO = new CustomerDao();
+        Vector<CustomerEnity> collection = cusDAO.getCollection();
+        for (CustomerEnity customer : collection) {
+            System.out.println(customer.toString());
+        }
+        CustomerEnity objCus = new CustomerEnity("00000000", "Lai Van Trach", "M", "Neilsen", "Ha huy giap -Q12-HCM", "01283477050", "laivantrachg@mail", "New", new Date(152000));
 //        cusDAO.insert((Object) objCus);
 //        collection = cusDAO.getCollection();
 //        for (CustomerEnity customer : collection) {
 //            System.out.println(customer.toString());
 //        }
-//    }
+        cusDAO.update(objCus);
+    }
 
     @Override
     public Vector<Object> search(String sString) {

@@ -16,7 +16,7 @@ public interface DAOConnection {
     
     public Vector getCollection();
     public void insert(Object obj);
-    public void update();
+    public void update(Object obj);
     public void delete();
     public Vector<Object> search(String sString);
     
