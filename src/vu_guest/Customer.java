@@ -30,6 +30,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
 
     private Frame JFrame;
     DefaultTableModel cusmodel;
+    CustomerEnity cusObj;
     DbConnect db;
     Statement st;
     ResultSet rs;
@@ -70,6 +71,8 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
             
         };
         showData();
+        bedit.setEnabled(false);
+        
         
         
     }
@@ -82,7 +85,6 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanel1 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
@@ -99,8 +101,8 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         jScrollPane1 = new javax.swing.JScrollPane();
         custable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        badd = new javax.swing.JButton();
+        bedit = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -221,21 +223,24 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jButton2.setText("Add");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        badd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/add24.png"))); // NOI18N
+        badd.setText("Add");
+        badd.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        badd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                baddActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton2);
+        jPanel2.add(badd);
 
-        jButton3.setText("Edit");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        bedit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/edit.png"))); // NOI18N
+        bedit.setText("Edit");
+        bedit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                beditActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton3);
+        jPanel2.add(bedit);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -247,7 +252,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(87, 87, 87))
@@ -269,11 +274,11 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         add(jPanel4, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void baddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baddActionPerformed
         Addcustomer addguest=new Addcustomer(JFrame, true);
         addguest.setVisible(true);
         
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_baddActionPerformed
 
     private void tnameCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_tnameCaretUpdate
         cusmodel.getDataVector().clear();
@@ -387,77 +392,52 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
     }//GEN-LAST:event_tidentifierCaretUpdate
 
     private void custableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_custableMouseClicked
-//        int row = custable.getSelectedRow();
-//        if(row==-1){
-//            JOptionPane.showMessageDialog(this, "No row selected");
-//            return;
-//        }
-        
-//            cusid = (int) target.getValueAt(i, 0);
-//            identifier = (String) target.getValueAt(i, 1);
-//            age=(Date) target.getValueAt(i, 2);
-//            fullname = (String) target.getValueAt(i, 3);
-//            gen=(String) target.getValueAt(i, 4);
-//            company=(String) target.getValueAt(i, 5);
-//            address=(String) target.getValueAt(i, 6);
-//            phone = (String) target.getValueAt(i, 7);
-//            email = (String) target.getValueAt(i, 8);
-//            status= (String) target.getValueAt(i, 9);
-//            Addcustomer add=new Addcustomer(JFrame, true);
-//            add.showData();
-//            add.setVisible(true);
-//            
-////            try {
-////            sql="select * from Customer";
-////            rs=st.executeQuery(sql);
-////            while(rs.next()){
-////               
-////                identifier=rs.getString(2);
-////                age=rs.getDate(3);
-////                fullname=rs.getString(4);
-////                gen=rs.getString(5);
-////                company=rs.getString(6);
-////                address=rs.getString(7);
-////                status=rs.getString(8);
-////                phone=rs.getString(9);
-////                email=rs.getString(10);
-////                CustomerEnity cus=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age, cusid);
-//                
-////                tname.setText(fullname);
-////                tidentifier.setText(identifier);
-////                add..setDate(dob);
-////                taAdrress.setText(address);
-////                cmStatus.setSelectedItem(status);
-////                tphone.setText(phone);
-////                temail.setText(email);
-////                tcompany.setText(company);
-////                if(gen.equals("Male")){
-////                        tmale.setSelected(true);
-////                    }else{
-////                        tfemale.setSelected(true);
-////                    }
-////            }
-////        } catch (Exception e) {
-////            e.printStackTrace();
-////        }
-////            
-//        }
-             if(evt.getClickCount()==2){
-//                JTable target=(JTable) evt.getSource();
                 int i=custable.getSelectedRow();
                 int b=custable.getSelectedColumn();
-             }
+                cusid = (int) custable.getValueAt(i, 0);
+                identifier = (String) custable.getValueAt(i, 1);
+                age=(Date) custable.getValueAt(i, 2);
+                fullname = (String) custable.getValueAt(i, 3);
+                gen=(String) custable.getValueAt(i, 4);
+                company=(String) custable.getValueAt(i, 5);
+                address=(String) custable.getValueAt(i, 6);
+                phone=(String) custable.getValueAt(i, 7);
+                email = (String) custable.getValueAt(i, 8);
+                status= (String) custable.getValueAt(i, 9);
+                bedit.setEnabled(true);
+                if(i==-1){
+                    JOptionPane.showMessageDialog(this, "No select row0");
+                    return;
+                }
+                if(evt.getClickCount()==2){
+                
+                cusObj=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age, cusid);
+                Addcustomer add=new Addcustomer(JFrame, true);
+                if(cusObj==null){
+                    return;
+                }
+                add.showupdate(cusObj);
+                add.setVisible(true);
+                }
+                
+                
+             
     }//GEN-LAST:event_custableMouseClicked
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void beditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beditActionPerformed
+        Addcustomer add=new Addcustomer(JFrame, true);
+        if(cusObj==null){
+            return;
+        }
+        add.showupdate(cusObj);
+        add.setVisible(true);
+    }//GEN-LAST:event_beditActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton badd;
+    private javax.swing.JButton bedit;
     private javax.swing.JTable custable;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel6;
