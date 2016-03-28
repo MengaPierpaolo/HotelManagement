@@ -561,7 +561,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         }
         try {
                 iidentifier=Integer.parseInt(identifier);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Person Identifier is must number");
                 tidentifier.setText("");
                 tidentifier.grabFocus();
@@ -574,7 +574,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
             tphone.grabFocus();
             return false;
         }
-        if(phone.length()>10){
+        if(phone.length()>11){
             JOptionPane.showMessageDialog(this, "Phone must < 10 digit");
             tphone.setText("");
             tphone.grabFocus();
@@ -582,7 +582,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         }
         try {
                 pphone=Integer.parseInt(phone);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Phone is must digit");
                 tphone.setText("");
                 tphone.grabFocus();
