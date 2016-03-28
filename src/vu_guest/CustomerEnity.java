@@ -7,8 +7,6 @@ package vu_guest;
 
 import java.util.Date;
 
-
-
 /**
  *
  * @author KeVin

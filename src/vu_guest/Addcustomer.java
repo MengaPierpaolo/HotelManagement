@@ -6,9 +6,16 @@
 package vu_guest;
 
 
+import com.toedter.calendar.JDateChooser;
+import connection.DbConnect;
+import hotelmanagement.Main_menu;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.sql.Date;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Date;
+import vu_guest.CustomerEnity;
 
 
 
@@ -16,8 +23,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import projectinterface.CentralInterface;
 import projectinterface.DAOConnection;
-import sun.security.x509.CertificateSubjectName;
-import sun.security.x509.DeltaCRLIndicatorExtension;
 
 /**
  *
@@ -28,21 +33,53 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
     /**
      * Creates new form Addcustomer
      */
-
         CustomerEnity cusenity;
         CustomerDao cusDao;
         DefaultComboBoxModel cmModel;
-        String identifier,fullname ,gen, address ,company , phone , email, status ;
+        String fullname,gen,address,company,phone,email,status,identifier;
+        Date dob;
+        int pphone,iidentifier;
+        DbConnect db;
+        Connection con;
+        Statement st;
+        ResultSet rs;
+        String sql;
+        int cusid;
         public Addcustomer(java.awt.Frame parent, boolean modal) {
             super(parent, modal);
             initComponents();
             setTitle("Add Customer");
+            db=new DbConnect("sa", "");
+            db.createConnect();
+            con = db.getCon();
+            st = db.getStsm();
             cmModel = new DefaultComboBoxModel(new Object[] {"New","Old"});
             cmStatus.setModel(cmModel);
             formDisplayCentral();
+            
+            
+            
+//            showData();
+            
+            
         }
-
-    
+        public void showupdate(CustomerEnity cusObj){
+            if(cusObj !=null){
+                tname.setText(cusObj.getFullname());
+                tidentifier.setText(cusObj.getIdentifier());
+                tage.setDate(cusObj.getAge());
+                taAdrress.setText(cusObj.getAddress());
+                cmStatus.setSelectedItem(cusObj.getStatus());
+                tphone.setText(cusObj.getPhone());
+                temail.setText(cusObj.getEmail());
+                tcompany.setText(cusObj.getCompany());
+                if(cusObj.getGender().equalsIgnoreCase("Male")){
+                    tmale.setSelected(true);
+                }else{
+                    tfemale.setSelected(true);
+                }
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -79,6 +116,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         cmStatus = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
         btnAddPay = new javax.swing.JButton();
+        bup = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -93,15 +131,15 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-        jLabel1.setText("Full Name");
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        jLabel1.setText("Full Name *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel1, gridBagConstraints);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-        jLabel2.setText("Age");
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        jLabel2.setText("Date Of Birth *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -113,16 +151,16 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jLabel3.setText("Address");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel3, gridBagConstraints);
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-        jLabel4.setText("Phone");
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        jLabel4.setText("Phone *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel4, gridBagConstraints);
@@ -140,7 +178,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jLabel6.setText("Gender");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel6, gridBagConstraints);
@@ -162,7 +200,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jPanel3.add(tname, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(tphone, gridBagConstraints);
@@ -190,43 +228,54 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(taddress, gridBagConstraints);
 
-        jLabel7.setText("Person Indentifier");
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        jLabel7.setText("Person Indentifier *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel7, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(tidentifier, gridBagConstraints);
 
         buttonGroup1.add(tmale);
-        tmale.setSelected(true);
         tmale.setText("Male");
+        tmale.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tmaleActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 0);
         jPanel3.add(tmale, gridBagConstraints);
 
         buttonGroup1.add(tfemale);
         tfemale.setText("Female");
+        tfemale.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfemaleActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(tfemale, gridBagConstraints);
 
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
         jLabel8.setText("Company");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -241,6 +290,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(tcompany, gridBagConstraints);
 
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
         jLabel9.setText("Status");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -259,6 +309,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
         btnAddPay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/add24.png"))); // NOI18N
         btnAddPay.setText("Add");
+        btnAddPay.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btnAddPay.setMaximumSize(new java.awt.Dimension(93, 33));
         btnAddPay.setMinimumSize(new java.awt.Dimension(93, 33));
         btnAddPay.setPreferredSize(new java.awt.Dimension(93, 33));
@@ -269,8 +320,28 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         });
         jPanel1.add(btnAddPay);
 
+        bup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/edit.png"))); // NOI18N
+        bup.setText("Edit");
+        bup.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        bup.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        bup.setMaximumSize(new java.awt.Dimension(93, 33));
+        bup.setMinimumSize(new java.awt.Dimension(93, 33));
+        bup.setPreferredSize(new java.awt.Dimension(93, 33));
+        bup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bupActionPerformed(evt);
+            }
+        });
+        jPanel1.add(bup);
+
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/cancel24.png"))); // NOI18N
         jButton4.setText("Cancel");
+        jButton4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButton4);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -301,21 +372,59 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
     private void btnAddPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPayActionPerformed
         //identifier,fullname,gender,company,address,phone,email,status;
-        identifier= tidentifier.getText();
         fullname = tname.getText();
+        identifier= tidentifier.getText();
+        dob=new java.util.Date();
+        java.sql.Date age = new java.sql.Date(dob.getTime());
         gen = (tmale.isSelected())?"Male": "Female";
         address = taAdrress.getText();
         company = tcompany.getText();
         phone = tphone.getText();
         email = temail.getText();
         status = cmStatus.getSelectedItem().toString();
+        if(!checkEmptyField())return;
         //Date age = tage.getDateFormatString();
-        if(!checkEmptyField()) return;
-        cusenity = new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, new Date(12134242));
+        
+        cusenity = new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age);
         cusDao = new CustomerDao();
         cusDao.insert((Object) cusenity);
-        JOptionPane.showMessageDialog(this, fullname + " added succeefully");
+        JOptionPane.showMessageDialog(this,"Add succesfully");
+        
+        setVisible(false);
     }//GEN-LAST:event_btnAddPayActionPerformed
+
+    private void tmaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tmaleActionPerformed
+        
+    }//GEN-LAST:event_tmaleActionPerformed
+
+    private void tfemaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfemaleActionPerformed
+        
+    }//GEN-LAST:event_tfemaleActionPerformed
+
+    private void bupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bupActionPerformed
+        fullname = tname.getText();
+        identifier= tidentifier.getText();
+        dob=new java.util.Date();
+        java.sql.Date age = new java.sql.Date(dob.getTime());
+        gen = (tmale.isSelected())?"Male": "Female";
+        address = taAdrress.getText();
+        company = tcompany.getText();
+        phone = tphone.getText();
+        email = temail.getText();
+        status = cmStatus.getSelectedItem().toString();
+        if(!checkEmptyField())return;
+        //Date age = tage.getDateFormatString();
+        
+        cusenity = new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age, cusid);
+        cusDao = new CustomerDao();
+        cusDao.update((Object) cusenity);
+        JOptionPane.showMessageDialog(this,"Update successfull");
+    }//GEN-LAST:event_bupActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        setVisible(false);
+    
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -361,6 +470,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddPay;
+    private javax.swing.JButton bup;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cmStatus;
     private javax.swing.JButton jButton4;
@@ -397,20 +507,78 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         if(this.getSize().width!= screenSize.width && this.getSize().height!=screenSize.height)
         setLocation((screenSize.width-w)/2, (screenSize.height-h)/2);
     }
-
-    @Override
-    public boolean checkEmptyField() {
-        while (fullname.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Name is not blank");
-            return false;
-        }
-        return true;
-    }
+    
+    
 
     @Override
     public void showData() {
         
     }
+
+    @Override
+    public boolean checkEmptyField() {
+        if(fullname.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Name cannot blank");
+            tname.grabFocus();
+            return false;
+                    
+        }
+        
+        if(tage.getDate()==null)
+        {
+            JOptionPane.showMessageDialog(this, "Date of Birth must select");
+            
+            return false;
+        }
+        if(identifier.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Identifier cannot blank");
+            tidentifier.grabFocus();
+            return false;
+        }
+        if(identifier.length()>10){
+            JOptionPane.showMessageDialog(this, "Person Identifier must < 10 number");
+            tidentifier.setText("");
+            tidentifier.grabFocus();
+            return false;
+        }
+        try {
+                iidentifier=Integer.parseInt(identifier);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Person Identifier is must number");
+                tidentifier.setText("");
+                tidentifier.grabFocus();
+                return false;
+            }
+        
+        
+        if(phone.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Phone cannot blank");
+            tphone.grabFocus();
+            return false;
+        }
+        if(phone.length()>10){
+            JOptionPane.showMessageDialog(this, "Phone must < 10 digit");
+            tphone.setText("");
+            tphone.grabFocus();
+            return false;
+        }
+        try {
+                pphone=Integer.parseInt(phone);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Phone is must digit");
+                tphone.setText("");
+                tphone.grabFocus();
+                return false;
+            }
+        if(!tmale.isSelected()&&!tfemale.isSelected()){
+            JOptionPane.showMessageDialog(this, "Gender must select");
+            return false;
+        }
+        
+        return true;
+    }
+
+    
 
 
 }

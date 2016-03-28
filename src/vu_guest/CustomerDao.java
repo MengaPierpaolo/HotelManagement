@@ -32,7 +32,7 @@ public class CustomerDao implements DAOConnection{
     Vector<CustomerEnity> cuscollection;
     
     public CustomerDao(){
-        db=new DbConnect("sa", "root");
+        db=new DbConnect("sa", "");
         db.createConnect();
         st=db.getStsm();
         con=db.getCon();
@@ -58,7 +58,7 @@ public class CustomerDao implements DAOConnection{
                 
                 cus=new CustomerEnity(identifier, fullname, gender, company, address, phone, email, status, age, cusID);
                 cuscollection.add(cus);
-               
+                
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,6 +70,7 @@ public class CustomerDao implements DAOConnection{
 
     @Override
     public void insert(Object obj) {
+        
         try {
             CustomerEnity objCus = (CustomerEnity) obj;
             sql = "insert into Customer([Person Identifier],fullname,gender,company,address,phone,email,status,DOB) "
@@ -81,9 +82,22 @@ public class CustomerDao implements DAOConnection{
         }
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
-    public void update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(Object obj) {
+        try {
+            CustomerEnity objCus = (CustomerEnity) obj;
+              sql="Update Customer set [Person Identifier]='"+objCus.getIdentifier()+"',fullname="+objCus.getFullname()+",gender="+objCus.getGender()
+                        +",company="+objCus.getCompany()+",email="+objCus.getEmail()+",DOB="+objCus.getAge()+",status="+objCus.getStatus()+",address="+objCus.getAddress()
+                      +",phone ="+objCus.getPhone()+" where CustomerID='"+objCus.getCusID()+"'";
+       
+            st.executeUpdate(sql);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -103,7 +117,6 @@ public class CustomerDao implements DAOConnection{
 //            System.out.println(customer.toString());
 //        }
 //    }
-
 
     @Override
     public Vector<Object> search(String sString) {

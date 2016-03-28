@@ -10,9 +10,15 @@ import java.awt.Frame;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import projectinterface.CentralInterface;
 
@@ -24,14 +30,18 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
 
     private Frame JFrame;
     DefaultTableModel cusmodel;
+    CustomerEnity cusObj;
     DbConnect db;
     Statement st;
     ResultSet rs;
     Connection con;
     String sql;
     Vector header,data,row;
-    String cusid,identifier,fullname,gender,company,address,phone,email,status;
-    int dt,id,passport;
+    String identifier,fullname,gen,company,address,phone,email,status;
+    Date age;
+    int cusid;
+    HashMap<String, Vector> result;
+    
     /**
      * Creates new form Customer
      */
@@ -41,6 +51,29 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         db.createConnect();
         con=db.getCon();
         st=db.getStsm();
+        header=new Vector();
+        data=new Vector();
+        header.add("Customer ID");
+        header.add("Person Identifier");
+        header.add("Age");
+        header.add("Full Name");
+        header.add("Gender");
+        header.add("Company");
+        header.add("Address");
+        header.add("Phone");
+        header.add("Email");
+        header.add("Status");
+        cusmodel=new DefaultTableModel(data,header){
+            @Override
+            public boolean isCellEditable(int rows,int column){
+                return false;
+            }
+            
+        };
+        showData();
+        bedit.setEnabled(false);
+        
+        
         
     }
 
@@ -56,19 +89,20 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         jPanel1 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        tname = new javax.swing.JTextField();
+        tphone = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        tidentifier = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         custable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        badd = new javax.swing.JButton();
+        bedit = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -78,6 +112,18 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         jLabel7.setText("Phone");
 
         jLabel6.setText("Name");
+
+        tname.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                tnameCaretUpdate(evt);
+            }
+        });
+
+        tphone.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                tphoneCaretUpdate(evt);
+            }
+        });
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 204));
         jPanel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -96,9 +142,13 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         jLabel2.setVerifyInputWhenFocusTarget(false);
         jPanel3.add(jLabel2);
 
-        jButton1.setText("Search");
-        jButton1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButton1.setMargin(new java.awt.Insets(2, 0, 2, 0));
+        jLabel1.setText("Identifier");
+
+        tidentifier.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                tidentifierCaretUpdate(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -106,18 +156,19 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7))
                         .addGap(39, 39, 39)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField1))))
+                            .addComponent(tphone)
+                            .addComponent(tname)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tidentifier, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -127,14 +178,16 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(424, Short.MAX_VALUE))
+                    .addComponent(tphone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(tidentifier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(467, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.LINE_START);
@@ -148,7 +201,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setForeground(new java.awt.Color(51, 0, 255));
 
-        custable.setForeground(new java.awt.Color(102, 51, 255));
+        custable.setForeground(new java.awt.Color(51, 51, 51));
         custable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -160,36 +213,49 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        custable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                custableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(custable);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jButton2.setText("Add");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        badd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/add24.png"))); // NOI18N
+        badd.setText("Add");
+        badd.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        badd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                baddActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton2);
+        jPanel2.add(badd);
 
-        jButton3.setText("Edit");
-        jPanel2.add(jButton3);
+        bedit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/edit.png"))); // NOI18N
+        bedit.setText("Edit");
+        bedit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                beditActionPerformed(evt);
+            }
+        });
+        jPanel2.add(bedit);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 299, Short.MAX_VALUE))
+                .addGap(87, 87, 87))
         );
 
         jTabbedPane2.addTab("Customers", jPanel5);
@@ -198,7 +264,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 669, Short.MAX_VALUE)
+            .addComponent(jTabbedPane2)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -208,18 +274,171 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         add(jPanel4, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void baddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baddActionPerformed
         Addcustomer addguest=new Addcustomer(JFrame, true);
         addguest.setVisible(true);
         
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_baddActionPerformed
+
+    private void tnameCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_tnameCaretUpdate
+        cusmodel.getDataVector().clear();
+        showData();
+        Vector obj =  cusmodel.getDataVector();
+        result = new HashMap<>();
+        int i =1;
+        for (Object customer : obj) {
+            Vector cus = (Vector) customer;
+            result.put(cus.get(3).toString()+i, cus);
+            i++;
+        }
+        Set object = result.keySet();
+        String word = tname.getText();
+        Iterator words = object.iterator();
+        Vector sub = new Vector();
+        while (words.hasNext()) {
+            Object next = words.next();
+            if(next.toString().toLowerCase().contains(word)){
+                sub.add(next);
+            }
+            //d.addWord(next.toString());
+        }
+        //System.err.println(result.get("Lai Van Trach").toString());
+        cusmodel.getDataVector().clear();
+        if(!sub.isEmpty()){
+            for (Object ob : sub) {
+                cusmodel.addRow(result.get(ob.toString()));
+            }
+        }
+        custable.setModel(cusmodel);
+        repaint();
+    }//GEN-LAST:event_tnameCaretUpdate
+
+    private void tphoneCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_tphoneCaretUpdate
+        cusmodel.getDataVector().clear();
+        showData();
+        Vector obj =  cusmodel.getDataVector();
+        result = new HashMap<>();
+        int i =1;
+        for (Object customer : obj) {
+            //System.out.println(customer.toString());
+            Vector cus = (Vector) customer;
+            result.put(cus.get(7).toString()+i, cus);
+            i++;
+        }
+        Set object = result.keySet();
+        
+            //System.out.println(object.toString());
+        // basic testing code to get started
+        String word = tphone.getText();
+        // Pass NearbyWords any Dictionary implementation you prefer
+
+        Iterator words = object.iterator();
+        Vector sub = new Vector();
+        while (words.hasNext()) {
+            Object next = words.next();
+            if(next.toString().toLowerCase().contains(word)){
+                sub.add(next);
+            }
+            //d.addWord(next.toString());
+        }
+        //System.err.println(result.get("Lai Van Trach").toString());
+        cusmodel.getDataVector().clear();
+        if(!sub.isEmpty()){
+            for (Object ob : sub) {
+                cusmodel.addRow(result.get(ob.toString()));
+            }
+        }
+        custable.setModel(cusmodel);
+        repaint();
+        //System.out.println("Spelling Suggestions for \""+word+"\" are:");
+        //System.out.println(suggest);
+    }//GEN-LAST:event_tphoneCaretUpdate
+
+    private void tidentifierCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_tidentifierCaretUpdate
+        cusmodel.getDataVector().clear();
+        showData();
+        Vector obj =  cusmodel.getDataVector();
+        result = new HashMap<>();
+        int i = 1;
+        for (Object customer : obj) {
+            //System.out.println(customer.toString());
+            Vector cus = (Vector) customer;
+            result.put(cus.get(1).toString()+i, cus);
+            i++;
+        }
+        Set object = result.keySet();
+        
+            //System.out.println(object.toString());
+        // basic testing code to get started
+        String word = tidentifier.getText();
+        // Pass NearbyWords any Dictionary implementation you prefer
+
+        Iterator words = object.iterator();
+        Vector sub = new Vector();
+        while (words.hasNext()) {
+            Object next = words.next();
+            if(next.toString().contains(word)){
+                sub.add(next);
+            }
+        }
+        cusmodel.getDataVector().clear();
+        if(!sub.isEmpty()){
+            for (Object ob : sub) {
+                cusmodel.addRow(result.get(ob.toString()));
+            }
+        }
+        custable.setModel(cusmodel);
+        repaint();
+    }//GEN-LAST:event_tidentifierCaretUpdate
+
+    private void custableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_custableMouseClicked
+                int i=custable.getSelectedRow();
+                int b=custable.getSelectedColumn();
+                cusid = (int) custable.getValueAt(i, 0);
+                identifier = (String) custable.getValueAt(i, 1);
+                age=(Date) custable.getValueAt(i, 2);
+                fullname = (String) custable.getValueAt(i, 3);
+                gen=(String) custable.getValueAt(i, 4);
+                company=(String) custable.getValueAt(i, 5);
+                address=(String) custable.getValueAt(i, 6);
+                phone=(String) custable.getValueAt(i, 7);
+                email = (String) custable.getValueAt(i, 8);
+                status= (String) custable.getValueAt(i, 9);
+                bedit.setEnabled(true);
+                if(i==-1){
+                    JOptionPane.showMessageDialog(this, "No select row0");
+                    return;
+                }
+                if(evt.getClickCount()==2){
+                
+                cusObj=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age, cusid);
+                Addcustomer add=new Addcustomer(JFrame, true);
+                if(cusObj==null){
+                    return;
+                }
+                add.showupdate(cusObj);
+                add.setVisible(true);
+                }
+                
+                
+             
+    }//GEN-LAST:event_custableMouseClicked
+
+    private void beditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beditActionPerformed
+        Addcustomer add=new Addcustomer(JFrame, true);
+        if(cusObj==null){
+            return;
+        }
+        add.showupdate(cusObj);
+        add.setVisible(true);
+    }//GEN-LAST:event_beditActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton badd;
+    private javax.swing.JButton bedit;
     private javax.swing.JTable custable;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -230,8 +449,9 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField tidentifier;
+    private javax.swing.JTextField tname;
+    private javax.swing.JTextField tphone;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -239,13 +459,38 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public boolean checkEmptyField() {
-        return false;
-    }
+    
 
     @Override
     public void showData() {
+        try {
+            sql="select* from Customer";
+            rs=st.executeQuery(sql);
+            while(rs.next()){
+                row=new Vector();
+                row.add(rs.getInt(1));
+                row.add(rs.getString(2));
+                row.add(rs.getDate(3));
+                row.add(rs.getString(4));
+                row.add(rs.getString(5));
+                row.add(rs.getString(6));
+                row.add(rs.getString(7));
+                row.add(rs.getString(9));
+                row.add(rs.getString(10));
+                row.add(rs.getString(8));
+                cusmodel.addRow(row);
+            }
+            custable.setModel(cusmodel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
+    }       
+
+    @Override
+    public boolean checkEmptyField() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+        
+    
 }
