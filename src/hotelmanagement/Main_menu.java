@@ -12,7 +12,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
-import room.Reservation;
+import trach_reservations.ReservationPanel;
 
 import room.RoomPane;
 
@@ -351,8 +351,8 @@ public class Main_menu extends javax.swing.JFrame {
     private void btnReservationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReservationActionPerformed
         if(cEditable.getComponentCount()!=0)
              cEditable.removeAll();
-        cEditable.add(new RoomPane(),"Roompane");
-        cLayout.show(cEditable, "Roompane");
+        cEditable.add(new ReservationPanel(),"ReservationPanel");
+        cLayout.show(cEditable, "ReservationPanel");
 
     }//GEN-LAST:event_btnReservationActionPerformed
 
@@ -393,7 +393,7 @@ public class Main_menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
-        cEditable.add(new Reservation(),"Rer");
+        cEditable.add(new ReservationPanel(),"Rer");
         cLayout.show(cEditable, "Rer");
         
 //        if(tabb_main.getTabCount()!=0)

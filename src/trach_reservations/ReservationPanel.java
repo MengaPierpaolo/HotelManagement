@@ -1,4 +1,4 @@
-package room;
+package trach_reservations;
 
 
 
@@ -12,12 +12,12 @@ package room;
  *
  * @author KeVin
  */
-public class Reservation extends javax.swing.JPanel {
+public class ReservationPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form Reservation
      */
-    public Reservation() {
+    public ReservationPanel() {
         initComponents();
         
     }
@@ -89,7 +89,6 @@ public class Reservation extends javax.swing.JPanel {
         jLabel2.setVerifyInputWhenFocusTarget(false);
         jPanel3.add(jLabel2);
 
-        jButton1.setIcon(new javax.swing.ImageIcon("E:\\sem accp13\\java\\Hotel_Project\\Pic\\Search-15.png")); // NOI18N
         jButton1.setText("Search");
         jButton1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 

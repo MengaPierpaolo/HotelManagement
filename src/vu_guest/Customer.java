@@ -47,7 +47,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
      */
     public Customer() {
         initComponents();
-        db=new DbConnect("sa", "");
+        db=new DbConnect("sa", "root");
         db.createConnect();
         con=db.getCon();
         st=db.getStsm();
