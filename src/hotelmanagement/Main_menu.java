@@ -6,6 +6,8 @@
 package hotelmanagement;
 
 
+import hung_room.Room;
+import hung_room.RoomType;
 import vu_guest.Customer;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -184,6 +186,11 @@ public class Main_menu extends javax.swing.JFrame {
         jButton7.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/room_tyte_rolled.png"))); // NOI18N
         jButton7.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
         jPanel5.add(jButton7, new java.awt.GridBagConstraints());
 
         jButton3.setFont(new java.awt.Font(".VnBook-Antiqua", 1, 14)); // NOI18N
@@ -421,8 +428,15 @@ public class Main_menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRoomActionPerformed
-        
+        cEditable.add(new Room(),"Room");
+        cLayout.show(cEditable, "Room");
     }//GEN-LAST:event_btnRoomActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        cEditable.add(new RoomType(),"RoomType");
+        cLayout.show(cEditable, "RoomType");
+    }//GEN-LAST:event_jButton7ActionPerformed
     
     /**
      * @param args the command line arguments
