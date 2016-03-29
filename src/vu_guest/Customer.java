@@ -5,11 +5,9 @@
  */
 package vu_guest;
 
+
 import connection.DbConnect;
 import java.awt.Frame;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,6 +18,11 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 import projectinterface.CentralInterface;
 
 /**
@@ -30,12 +33,9 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
 
     private Frame JFrame;
     DefaultTableModel cusmodel;
+    Vector<CustomerEnity> cusEnity;
     CustomerEnity cusObj;
-    DbConnect db;
-    Statement st;
-    ResultSet rs;
-    Connection con;
-    String sql;
+    CustomerDao cusdao;
     Vector header,data,row;
     String identifier,fullname,gen,company,address,phone,email,status;
     Date age;
@@ -47,10 +47,8 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
      */
     public Customer() {
         initComponents();
-        db=new DbConnect("sa", "root");
-        db.createConnect();
-        con=db.getCon();
-        st=db.getStsm();
+        cusdao=new CustomerDao();
+        cusEnity=cusdao.getCollection();
         header=new Vector();
         data=new Vector();
         header.add("Customer ID");
@@ -70,12 +68,12 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
             }
             
         };
+        custable.setModel(cusmodel);
         showData();
         bedit.setEnabled(false);
         
-        
-        
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -204,13 +202,10 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         custable.setForeground(new java.awt.Color(51, 51, 51));
         custable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         custable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -235,9 +230,9 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
 
         bedit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/edit.png"))); // NOI18N
         bedit.setText("Edit");
-        bedit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                beditActionPerformed(evt);
+        bedit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                beditMouseClicked(evt);
             }
         });
         jPanel2.add(bedit);
@@ -275,8 +270,9 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
     }// </editor-fold>//GEN-END:initComponents
 
     private void baddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baddActionPerformed
-        Addcustomer addguest=new Addcustomer(JFrame, true);
-        addguest.setVisible(true);
+        Addcustomer add=new Addcustomer(JFrame, true);
+        add.setVisible(true);
+        
         
     }//GEN-LAST:event_baddActionPerformed
 
@@ -411,27 +407,51 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
                 }
                 if(evt.getClickCount()==2){
                 
-                cusObj=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age, cusid);
+                CustomerEnity cusObj=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age, cusid);
                 Addcustomer add=new Addcustomer(JFrame, true);
                 if(cusObj==null){
                     return;
                 }
-                add.showupdate(cusObj);
+                add.showupdate(cusObj,false);
                 add.setVisible(true);
+                
                 }
                 
                 
              
     }//GEN-LAST:event_custableMouseClicked
 
-    private void beditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beditActionPerformed
-        Addcustomer add=new Addcustomer(JFrame, true);
-        if(cusObj==null){
-            return;
-        }
-        add.showupdate(cusObj);
-        add.setVisible(true);
-    }//GEN-LAST:event_beditActionPerformed
+    private void beditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_beditMouseClicked
+        int i=custable.getSelectedRow();
+                int b=custable.getSelectedColumn();
+                cusid = (int) custable.getValueAt(i, 0);
+                identifier = (String) custable.getValueAt(i, 1);
+                age=(Date) custable.getValueAt(i, 2);
+                fullname = (String) custable.getValueAt(i, 3);
+                gen=(String) custable.getValueAt(i, 4);
+                company=(String) custable.getValueAt(i, 5);
+                address=(String) custable.getValueAt(i, 6);
+                phone=(String) custable.getValueAt(i, 7);
+                email = (String) custable.getValueAt(i, 8);
+                status= (String) custable.getValueAt(i, 9);
+                bedit.setEnabled(true);
+                if(i==-1){
+                    JOptionPane.showMessageDialog(this, "No select row0");
+                    return;
+                }
+                if(evt.getClickCount()==1){
+                
+                CustomerEnity cusObj=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age, cusid);
+                Addcustomer add=new Addcustomer(JFrame, true);
+                if(cusObj==null){
+                    return;
+                }
+                add.showupdate(cusObj,false);
+                add.setVisible(true);
+                
+                }
+                
+    }//GEN-LAST:event_beditMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -463,28 +483,24 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
 
     @Override
     public void showData() {
-        try {
-            sql="select* from Customer";
-            rs=st.executeQuery(sql);
-            while(rs.next()){
-                row=new Vector();
-                row.add(rs.getInt(1));
-                row.add(rs.getString(2));
-                row.add(rs.getDate(3));
-                row.add(rs.getString(4));
-                row.add(rs.getString(5));
-                row.add(rs.getString(6));
-                row.add(rs.getString(7));
-                row.add(rs.getString(9));
-                row.add(rs.getString(10));
-                row.add(rs.getString(8));
-                cusmodel.addRow(row);
-            }
-            custable.setModel(cusmodel);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
+           int i =0;
+            while(i<cusEnity.size()){
+            row=new Vector();
+            row.addElement(cusEnity.get(i).getCusID());
+            row.addElement(cusEnity.get(i).getIdentifier());
+            row.addElement(cusEnity.get(i).getAge());
+            row.addElement(cusEnity.get(i).getFullname());
+            row.addElement(cusEnity.get(i).getGender());
+            row.addElement(cusEnity.get(i).getCompany());
+            row.addElement(cusEnity.get(i).getAddress());
+            row.addElement(cusEnity.get(i).getPhone());
+            row.addElement(cusEnity.get(i).getEmail());
+            row.addElement(cusEnity.get(i).getStatus());
+            data.add(row);
+            i++;
+            custable.setAutoCreateRowSorter(true);
+        } 
+     
     }       
 
     @Override
