@@ -5,12 +5,19 @@
  */
 package trach_reservations;
 
+import hung_room.RoomEntity;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import projectinterface.CentralInterface;
 import vu_guest.CustomerEnity;
 
@@ -20,32 +27,60 @@ import vu_guest.CustomerEnity;
  */
 public class ReservationDialog extends javax.swing.JDialog implements CentralInterface{
     
-    DateFormat df = DateFormat.getDateInstance();
     Date date;
     DefaultComboBoxModel cmModel;
-    /**
-     * Creates new form ReservationDialog
-     */
-    public ReservationDialog(java.awt.Frame parent, boolean modal) {
+    String status;
+    int rID, cID, roomID, num, resid;
+    double paid;
+    DateFormat f;
+    java.sql.Date checkInDate, checkOutDate;
+    ReservationEntity resObj;
+    ReservationDAO resDAO;
+    String function;
+    ReservationPanel panel;
+    public ReservationDialog(java.awt.Frame parent, boolean modal, String s, ReservationPanel panel, ReservationEntity resObj) {
         super(parent, modal);
         initComponents();
-        setTitle("Add new reservation");
+        this.function = s;
+        this.panel = panel;
+        this.resObj = resObj;
+        
         date = new Date();
         datBook.setDate(date);
-        cmModel = new DefaultComboBoxModel(new Object[]{"New","Comfirm","Cancel"});
+        cmModel = new DefaultComboBoxModel(new Object[]{"New","Comfirm","Check In","Check Out","Cancel"});
         cmStatus.setModel(cmModel);
+        if(s.equalsIgnoreCase("new")){
+            setTitle("Add new reservation");
+            setControl(false);
+        }
+        if(s.equalsIgnoreCase("update")){
+            setTitle("Update Reservation");
+            showData();
+            setControl(false);
+                        
+        }
+                
         formDisplayCentral();
         revalidate();
         repaint();
     }
     public void setCustomerFiled(CustomerEnity cusObj){
         if(cusObj !=null){
+           txtCus.setText(String.valueOf(cusObj.getCusID()));
            txtName.setText(cusObj.getFullname());
            txtIdentify.setText(cusObj.getIdentifier());
            txtPhone.setText(cusObj.getPhone());
            txtEmail.setText(cusObj.getEmail());
         }
 
+    }
+    public void setControl(boolean ck){
+        lblCusID.setEnabled(ck);
+        lblRoomID.setEnabled(ck);
+        lblres.setEnabled(ck);
+        txtCus.setEnabled(ck);
+        txtResID.setEnabled(ck);
+        txtRoomID.setEnabled(ck);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -62,10 +97,12 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         jLabel4 = new javax.swing.JLabel();
         cmStatus = new javax.swing.JComboBox<>();
         datBook = new com.toedter.calendar.JDateChooser();
+        txtResID = new javax.swing.JTextField();
+        lblres = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        spinnum = new javax.swing.JSpinner();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         txtRoom = new javax.swing.JTextField();
@@ -74,6 +111,8 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         datCheckIn = new com.toedter.calendar.JDateChooser();
         datCheckOut = new com.toedter.calendar.JDateChooser();
         btnSearchRoom = new javax.swing.JButton();
+        txtRoomID = new javax.swing.JTextField();
+        lblRoomID = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         btnSearchCus = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
@@ -84,6 +123,8 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         txtIdentify = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
+        txtCus = new javax.swing.JTextField();
+        lblCusID = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         btnAddPay = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -91,7 +132,7 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         btnEdit = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
-        btnOK = new javax.swing.JButton();
+        btnTemp = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
 
@@ -121,6 +162,7 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
 
         cmStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        datBook.setDateFormatString("yyyy-MM-dd");
         datBook.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
@@ -130,6 +172,8 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
+
+        lblres.setText("Reservation ID");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -144,16 +188,24 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                 .addComponent(jLabel4)
                 .addGap(31, 31, 31)
                 .addComponent(cmStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(334, Short.MAX_VALUE))
+                .addGap(29, 29, 29)
+                .addComponent(lblres)
+                .addGap(26, 26, 26)
+                .addComponent(txtResID, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(139, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel4)
-                        .addComponent(cmStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblres)
+                            .addComponent(txtResID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(cmStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(datBook, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -165,6 +217,13 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         jLabel5.setText("Check In (*)");
 
         jLabel6.setText("Check Out (*)");
+
+        spinnum.setValue(1);
+        spinnum.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinnumStateChanged(evt);
+            }
+        });
 
         jLabel7.setText("People Num");
 
@@ -183,13 +242,19 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         ));
         jScrollPane1.setViewportView(tblRoom);
 
+        datCheckIn.setDateFormatString("yyyy-MM-dd");
+
+        datCheckOut.setDateFormatString("yyyy-MM-dd");
+
         btnSearchRoom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/search24.png"))); // NOI18N
+
+        lblRoomID.setText("Room ID");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
@@ -198,16 +263,19 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7)
-                            .addComponent(jLabel8))
+                            .addComponent(jLabel8)
+                            .addComponent(lblRoomID))
                         .addGap(67, 67, 67)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(datCheckIn, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(datCheckOut, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(txtRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnSearchRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtRoomID, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(spinnum, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(datCheckIn, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(datCheckOut, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(txtRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnSearchRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -223,7 +291,7 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                     .addComponent(datCheckOut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spinnum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
                 .addGap(9, 9, 9)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -231,7 +299,11 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                         .addComponent(jLabel8)
                         .addComponent(txtRoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnSearchRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(57, 57, 57)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRoomID)
+                    .addComponent(txtRoomID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -253,6 +325,8 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
 
         jLabel17.setText("Email");
 
+        lblCusID.setText("Customer ID");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -273,16 +347,26 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel14)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14)
+                            .addComponent(lblCusID))
                         .addGap(26, 26, 26)
-                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSearchCus, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCus, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnSearchCus, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblCusID)
+                    .addComponent(txtCus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel14)
@@ -300,7 +384,7 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Payment Information"));
@@ -351,13 +435,18 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        btnOK.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/ok24.png"))); // NOI18N
-        btnOK.setText("OK");
+        btnTemp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/ok24.png"))); // NOI18N
+        btnTemp.setText("Add");
+        btnTemp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTempActionPerformed(evt);
+            }
+        });
 
         btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/cancel24.png"))); // NOI18N
         btnCancel.setText("Cancel");
@@ -370,9 +459,9 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(222, Short.MAX_VALUE)
-                .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
                 .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(btnReset)
@@ -385,7 +474,7 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -398,7 +487,7 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 10, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -443,6 +532,109 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
 
     }//GEN-LAST:event_formFocusGained
 
+    private void btnTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTempActionPerformed
+        if(!checkEmptyField()) return;
+        try {
+            cID = Integer.parseInt(txtCus.getText());
+            roomID = Integer.parseInt(txtRoomID.getText());
+            //f =  new SimpleDateFormat("MM/dd/yyyy");
+           // String checkin = f.format(datCheckIn.getDate());
+
+            checkInDate = new java.sql.Date(datCheckIn.getDate().getTime());
+            checkOutDate =  new java.sql.Date(datCheckOut.getDate().getTime());
+            num = (int)spinnum.getValue();
+            status =(String) cmStatus.getSelectedItem();
+            //resid = (int) txtResID.getText();
+            rID = Integer.parseInt(txtResID.getText());
+            if(this.function.equalsIgnoreCase("new")){
+                resObj = new ReservationEntity(status,num, checkInDate, checkOutDate, roomID, cID, 0);
+                resDAO = new ReservationDAO();
+                resDAO.insert((Object) resObj);
+                JOptionPane.showMessageDialog(this, "Added succefully");
+                panel.showData();
+            }else{
+                resObj = new ReservationEntity(rID,status,num, checkInDate, checkOutDate, roomID, cID, 0);
+                resDAO = new ReservationDAO();
+                resDAO.update((Object) resObj);
+                JOptionPane.showMessageDialog(this, "Updated succefully");
+                panel.showData();
+            }
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+            return;
+        }
+      
+    }//GEN-LAST:event_btnTempActionPerformed
+
+    private void spinnumStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinnumStateChanged
+        if((int)spinnum.getValue()<0){
+            JOptionPane.showMessageDialog(this, "Number of people must be greater than 0.");
+            return;
+        }
+    }//GEN-LAST:event_spinnumStateChanged
+    @Override
+    public void formDisplayCentral() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int w = this.getSize().width;
+        int h = this.getSize().height;
+        //setSize(screenSize.width,screenSize.height);
+        if(this.getSize().width!= screenSize.width && this.getSize().height!=screenSize.height)
+        setLocation((screenSize.width-w)/2, (screenSize.height-h)/2);
+    }
+
+
+
+    @Override
+    public void showData() {
+        if(resObj != null){
+            resDAO = new ReservationDAO();
+            txtCus.setText(String.valueOf(resObj.getCusID()));
+            CustomerEnity cus = resDAO.searchCus(resObj.getCusID());
+            if(cus!= null){
+                txtName.setText(cus.getFullname());
+            }else{
+                JOptionPane.showMessageDialog(this, "Something was wrong. This customer was not exist.");
+                return;
+            }
+            txtRoomID.setText(String.valueOf(resObj.getRoomID()));
+            RoomEntity room= resDAO.search(resObj.getRoomID());
+            if(room!= null){
+                txtRoom.setText(room.getRoomName());
+            }else{
+                JOptionPane.showMessageDialog(this, "Something was wrong. This room was not exist.");
+                return;
+            }
+            txtResID.setText(String.valueOf(resObj.getResID()));
+            datCheckIn.setDate(resObj.getCheckInDate());
+            datCheckOut.setDate(resObj.getCheckOutDate());
+            spinnum.setValue(resObj.getNumberofpeople());
+            cmModel.setSelectedItem(resObj.getStatus());
+            cmStatus.setModel(cmModel);
+        }
+    }
+
+    @Override
+    public boolean checkEmptyField() {
+        while (txtCus.getText().isEmpty()) {            
+            JOptionPane.showMessageDialog(this, "Cus ID must not be blank.");
+            return false;
+        }
+        while (txtName.getText().isEmpty()) {            
+            JOptionPane.showMessageDialog(this, "Customer Name must not be blank.");
+            return false;
+        }
+        
+        while (txtRoomID.getText().isEmpty()) {            
+            JOptionPane.showMessageDialog(this, "Room ID must not be blank.");
+            return false;
+        }
+        while (txtRoom.getText().isEmpty()) {            
+            JOptionPane.showMessageDialog(this, "Room ID must not be blank.");
+            return false;
+        }
+        return true;
+    }
     /**
      * @param args the command line arguments
      */
@@ -473,7 +665,7 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ReservationDialog dialog = new ReservationDialog(new javax.swing.JFrame(), true);
+                ReservationDialog dialog = new ReservationDialog(new javax.swing.JFrame(), true, "new", null, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -489,10 +681,10 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
     private javax.swing.JButton btnAddPay;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnEdit;
-    private javax.swing.JButton btnOK;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSearchCus;
     private javax.swing.JButton btnSearchRoom;
+    private javax.swing.JButton btnTemp;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cmStatus;
     private com.toedter.calendar.JDateChooser datBook;
@@ -516,35 +708,21 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblCusID;
+    private javax.swing.JLabel lblRoomID;
+    private javax.swing.JLabel lblres;
+    private javax.swing.JSpinner spinnum;
     private javax.swing.JTable tblRoom;
+    private javax.swing.JTextField txtCus;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtIdentify;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPhone;
+    private javax.swing.JTextField txtResID;
     private javax.swing.JTextField txtRoom;
+    private javax.swing.JTextField txtRoomID;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void formDisplayCentral() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int w = this.getSize().width;
-        int h = this.getSize().height;
-        //setSize(screenSize.width,screenSize.height);
-        if(this.getSize().width!= screenSize.width && this.getSize().height!=screenSize.height)
-        setLocation((screenSize.width-w)/2, (screenSize.height-h)/2);
-    }
-
-
-
-    @Override
-    public void showData() {
-
-    }
-
-    @Override
-    public boolean checkEmptyField() {
-        return false;
-    }
+    
 }

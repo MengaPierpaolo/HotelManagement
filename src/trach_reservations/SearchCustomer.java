@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import projectinterface.CentralInterface;
 import vu_guest.CustomerEnity;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  *
@@ -42,7 +42,7 @@ public class SearchCustomer extends javax.swing.JDialog implements CentralInterf
     String cusid, cusname, phone, email, identifier,  gender,company,adrress,status;
     Date dob;
     HashMap<String, Vector> result;
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+
     ///khai bao
     ReservationDialog p;
     public SearchCustomer(java.awt.Frame parent, boolean modal, ReservationDialog p) {
@@ -439,7 +439,7 @@ public class SearchCustomer extends javax.swing.JDialog implements CentralInterf
             }
             cusid = String.valueOf(tblCus.getValueAt(row, 0));
             cusname = (String) tblCus.getValueAt(row, 3);
-            dob = (java.sql.Date)tblCus.getValueAt(row, 2);
+            dob = (Date)tblCus.getValueAt(row, 2);
             //java.sql.Date sqlDate = new java.sql.Date(formatter.parse(dob).getTime());
             gender =(String) tblCus.getValueAt(row, 4);
             company =(String) tblCus.getValueAt(row, 5);

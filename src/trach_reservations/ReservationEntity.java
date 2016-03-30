@@ -17,28 +17,42 @@ public class ReservationEntity {
     private Date checkInDate;
     private Date checkOutDate;
     private int roomID;
-    private int cusIS;
-    private int total;
-    private int paid;
-    private int balance;
+    private int cusID;
+    private double paid;
+    private int numberofpeople;
 
-    public ReservationEntity(int ResID, String status, Date checkInDate, Date checkOutDate, int roomID, int cusIS, int total, int paid, int balance) {
+
+    public ReservationEntity(int ResID, String status,int numberofpeople, Date checkInDate, Date checkOutDate, int roomID, int cusID,  double paid) {
         this.ResID = ResID;
         this.status = status;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.roomID = roomID;
-        this.cusIS = cusIS;
-        this.total = total;
+        this.cusID = cusID;
         this.paid = paid;
-        this.balance = balance;
+        this.numberofpeople = numberofpeople;
     }
-
-    public ReservationEntity() {
+    public ReservationEntity(String status,int numberofpeople, Date checkInDate, Date checkOutDate, int roomID, int cusID,  double paid) {
+        this.status = status;
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
+        this.roomID = roomID;
+        this.cusID = cusID;
+        this.paid = paid;
+        this.numberofpeople = numberofpeople;
     }
+   
 
     public int getResID() {
         return ResID;
+    }
+
+    public int getNumberofpeople() {
+        return numberofpeople;
+    }
+
+    public void setNumberofpeople(int numberofpeople) {
+        this.numberofpeople = numberofpeople;
     }
 
     public String getStatus() {
@@ -57,21 +71,15 @@ public class ReservationEntity {
         return roomID;
     }
 
-    public int getCusIS() {
-        return cusIS;
+    public int getCusID() {
+        return cusID;
     }
 
-    public int getTotal() {
-        return total;
-    }
 
-    public int getPaid() {
+    public double getPaid() {
         return paid;
     }
 
-    public int getBalance() {
-        return balance;
-    }
 
     public void setResID(int ResID) {
         this.ResID = ResID;
@@ -93,20 +101,15 @@ public class ReservationEntity {
         this.roomID = roomID;
     }
 
-    public void setCusIS(int cusIS) {
-        this.cusIS = cusIS;
+    public void setCusID(int cusIS) {
+        this.cusID = cusIS;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
-    }
 
-    public void setPaid(int paid) {
+
+    public void setPaid(double paid) {
         this.paid = paid;
     }
 
-    public void setBalance(int balance) {
-        this.balance = balance;
-    }
     
 }

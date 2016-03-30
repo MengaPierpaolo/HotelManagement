@@ -5,7 +5,10 @@
  */
 package trach_reservations;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
+import javax.swing.text.DateFormatter;
 
 /**
  *
@@ -17,12 +20,16 @@ public class MainTest {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Vector<ReservationEntity> res = new ReservationDAO().getResCollection();
-        if(res.isEmpty())
-            System.out.println("NULL");
-        for (ReservationEntity re : res) {
-            System.out.print(re.toString());
-        }
+//        Vector<ReservationEntity> res = new ReservationDAO().getCollection();
+//        if(res.isEmpty())
+//            System.out.println("NULL");
+//        for (ReservationEntity re : res) {
+//            System.out.print(re.toString());
+//        }
+            Date date = new Date();
+            date.getTime();
+            SimpleDateFormat dt1 = new SimpleDateFormat("dd/MM/yyyyy");
+            System.out.println(dt1.format(date));
     }
     
 }

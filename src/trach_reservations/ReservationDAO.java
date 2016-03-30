@@ -5,19 +5,24 @@
  */
 package trach_reservations;
 
+import hung_room.RoomEntity;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import projectinterface.DAOConnection;
+import vu_guest.CustomerEnity;
 
 
 /**
  *
  * @author Administrator
  */
-public class ReservationDAO {
+public class ReservationDAO implements DAOConnection{
     ReservationEntity res;
     DbConnect db;
     Connection con;
@@ -25,9 +30,8 @@ public class ReservationDAO {
     ResultSet rs;
     String sql;
     int ResID; String status; Date checkInDate; 
-    Date checkOutDate; int roomID; int cusIS; 
-    int total; int paid; int balance;
-    
+    Date checkOutDate; int roomID; int cusID, num; 
+    int paid; 
     Vector<ReservationEntity> resCollection;
     
     public ReservationDAO() {
@@ -36,21 +40,23 @@ public class ReservationDAO {
         st = db.getStsm();
         con = db.getCon();
         resCollection = new Vector<>();
-            }
-    public Vector<ReservationEntity> getResCollection(){
+    }
+    @Override
+    public Vector<ReservationEntity> getCollection(){
         try {
             sql = "select * from Reservation";
             rs = st.executeQuery(sql);
             while(rs.next()){
                 ResID = rs.getInt(1);
-                status = rs.getString(2);
+                cusID = rs.getInt(2);
                 checkInDate = rs.getDate(3);
                 checkOutDate = rs.getDate(4);
-                total = rs.getInt(5);
+                num = rs.getInt(5);
                 paid = rs.getInt(6);
-                balance = rs.getInt(7);
-                res = new ReservationEntity(ResID, status, checkInDate, checkOutDate, 
-                        roomID, cusIS, total, paid, balance);
+                status = rs.getString(7);
+                roomID = rs.getInt(8);
+                res = new ReservationEntity(ResID, status,num, checkInDate, checkOutDate, 
+                        roomID, cusID,  paid);
                 resCollection.add(res);
             }
             
@@ -60,8 +66,74 @@ public class ReservationDAO {
         }
         return resCollection;
     }
-    public int insertResevation(){
+    @Override
+    public void insert(Object obj) {
         
-        return -1;
+        try {
+            ReservationEntity objRes = (ReservationEntity) obj;
+            sql = "insert into Reservation(CustomerID,StartDate,EndDate,NumberOfPeople,Paid,Status,RoomID) "
+                    + "values("+ objRes.getCusID() +",'" +objRes.getCheckInDate()+"','"+objRes.getCheckOutDate()+"',"+ objRes.getNumberofpeople()
+                    +","+objRes.getPaid()+",'"+objRes.getStatus()+"',"+objRes.getRoomID()+ ")";
+            st.execute(sql);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param obj
+     */
+    @Override
+    public void update(Object obj) {
+        try {
+             ReservationEntity objRes = (ReservationEntity) obj;
+              sql="Update Reservation set CustomerID="+objRes.getCusID()+" ,startdate='"+objRes.getCheckInDate()+"' ,enddate= '"+objRes.getCheckOutDate()+"' ,NumberOfPeople="+objRes.getNumberofpeople()+
+                      " ,paid="+objRes.getPaid()+",status='"+objRes.getStatus()+"',roomid="+objRes.getRoomID()+" where ReservationID="+objRes.getResID();
+       
+            st.executeUpdate(sql);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Vector<Object> search(String sString) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public RoomEntity search(int roomID){
+        RoomEntity room = null;
+        try {
+            
+            sql = "select * from Rooms where roomid="+ roomID;
+            rs = st.executeQuery(sql);
+            rs.next();
+            room = new RoomEntity(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getString(4));
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return room;
+    }
+    public CustomerEnity searchCus(int cusID){
+        CustomerEnity cus = null;
+        try {
+            
+            sql = "select * from Customer where CustomerID ="+ cusID;
+            rs = st.executeQuery(sql);
+            rs.next();
+            cus = new CustomerEnity(rs.getString(2), rs.getString(4), rs.getString(5), rs.getString(6),
+                    rs.getString(7), rs.getString(9), rs.getString(10), rs.getString(8), rs.getDate(3),rs.getInt(1));
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return cus;
     }
 }
