@@ -41,6 +41,43 @@ public class ReservationDAO implements DAOConnection{
         con = db.getCon();
         resCollection = new Vector<>();
     }
+    public int countRow(){
+        int row = 0;
+        try {
+              sql="select count(*) from Reservation";
+       
+            rs = st.executeQuery(sql);
+            rs.next();
+            row = rs.getInt(1);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return row;
+    }
+    public Vector<ReservationEntity> pageData(int page){
+        try {
+            sql = "select top 10 * from Reservation where ReservationID not in (select top "+(page*10-10)+" ReservationID from Reservation)";
+            rs = st.executeQuery(sql);
+            while(rs.next()){
+                ResID = rs.getInt(1);
+                cusID = rs.getInt(2);
+                checkInDate = rs.getDate(3);
+                checkOutDate = rs.getDate(4);
+                num = rs.getInt(5);
+                paid = rs.getInt(6);
+                status = rs.getString(7);
+                roomID = rs.getInt(8);
+                res = new ReservationEntity(ResID, status,num, checkInDate, checkOutDate, 
+                        roomID, cusID,  paid);
+                resCollection.add(res);
+            }
+            
+        } catch (SQLException ex) {
+            //JOptionPane.showMessageDialog(null, ex.getMessage());
+            ex.printStackTrace();
+        }
+        return resCollection;
+    }
     @Override
     public Vector<ReservationEntity> getCollection(){
         try {

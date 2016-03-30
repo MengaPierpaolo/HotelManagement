@@ -42,7 +42,13 @@ public class SearchEmptyRoom extends javax.swing.JFrame {
         rHeader.add("Room Type ID");
         rHeader.add("Status");
         rHeader.add("Bed Type");
-        roomModel = new DefaultTableModel(rData,rHeader);
+        roomModel = new DefaultTableModel(rData,rHeader){
+            @Override
+            public boolean isCellEditable(int rows,int column){
+                return false;
+            }
+            
+        };
         
         con = db.getCon();
         st = db.getStsm();

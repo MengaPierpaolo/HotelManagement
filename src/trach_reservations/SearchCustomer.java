@@ -68,7 +68,13 @@ public class SearchCustomer extends javax.swing.JDialog implements CentralInterf
         rHeader.add("Status");
         rHeader.add("Phone");
         rHeader.add("Email");
-        cusModel = new DefaultTableModel(rData,rHeader);
+        cusModel = new DefaultTableModel(rData,rHeader){
+            @Override
+            public boolean isCellEditable(int rows,int column){
+                return false;
+            }
+            
+        };
         showData();
         formDisplayCentral();
              

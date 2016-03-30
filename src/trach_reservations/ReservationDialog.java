@@ -81,6 +81,11 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
         txtCus.setEnabled(ck);
         txtResID.setEnabled(ck);
         txtRoomID.setEnabled(ck);
+        txtEmail.setEditable(ck);
+        txtIdentify.setEditable(ck);
+        txtPhone.setEditable(ck);
+        txtName.setEditable(ck);
+        txtRoom.setEditable(ck);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -593,6 +598,9 @@ public class ReservationDialog extends javax.swing.JDialog implements CentralInt
             CustomerEnity cus = resDAO.searchCus(resObj.getCusID());
             if(cus!= null){
                 txtName.setText(cus.getFullname());
+                txtEmail.setText(cus.getEmail());
+                txtIdentify.setText(cus.getIdentifier());
+                txtPhone.setText(cus.getPhone());
             }else{
                 JOptionPane.showMessageDialog(this, "Something was wrong. This customer was not exist.");
                 return;

@@ -39,10 +39,10 @@ public class ReservationPanel extends javax.swing.JPanel implements CentralInter
     java.sql.Date startDate, endDate;
     double paid;
     HashMap<String, Vector> result;
-    
+    int page=0, numOfRow, cPage=1;
     public ReservationPanel() {
         initComponents();
-
+        
         header=new Vector();
         data=new Vector();
         header.add("Reservation ID");
@@ -61,6 +61,24 @@ public class ReservationPanel extends javax.swing.JPanel implements CentralInter
             }
             
         };
+               
+        tblRes.setRowHeight(30);
+        page();
+    }
+    public void page(){
+        resDAO = new ReservationDAO();
+        numOfRow = resDAO.countRow();
+        if(numOfRow%10==0){
+            page = numOfRow/10;
+        }else{
+            page = numOfRow/10 +1;
+        }
+        loadData(1);
+        lblPage.setText(cPage+"/" + page);
+    }
+    public void loadData(int page){
+        resDAO = new ReservationDAO();
+        resCollection = resDAO.pageData(page);
         showData();
     }
     public void checkUpdate(){
@@ -97,6 +115,12 @@ public class ReservationPanel extends javax.swing.JPanel implements CentralInter
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRes = new javax.swing.JTable();
+        jPanel9 = new javax.swing.JPanel();
+        btnFirst = new javax.swing.JButton();
+        btnPre = new javax.swing.JButton();
+        lblPage = new javax.swing.JLabel();
+        btnNext = new javax.swing.JButton();
+        btnLast = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -252,17 +276,56 @@ public class ReservationPanel extends javax.swing.JPanel implements CentralInter
         });
         jScrollPane1.setViewportView(tblRes);
 
+        jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        btnFirst.setText("<<<");
+        btnFirst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFirstActionPerformed(evt);
+            }
+        });
+        jPanel9.add(btnFirst);
+
+        btnPre.setText("<");
+        btnPre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreActionPerformed(evt);
+            }
+        });
+        jPanel9.add(btnPre);
+
+        lblPage.setText("jLabel1");
+        jPanel9.add(lblPage);
+
+        btnNext.setText(">");
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
+        jPanel9.add(btnNext);
+
+        btnLast.setText(">>>");
+        btnLast.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLastActionPerformed(evt);
+            }
+        });
+        jPanel9.add(btnLast);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 723, Short.MAX_VALUE)
+            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jTabbedPane2.addTab("Reservations", jPanel5);
@@ -393,10 +456,46 @@ public class ReservationPanel extends javax.swing.JPanel implements CentralInter
         }
     }//GEN-LAST:event_tblResMouseClicked
 
+    private void btnPreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreActionPerformed
+        if(cPage > 1){
+            cPage--;
+            loadData(cPage);
+            lblPage.setText(cPage +"/" +page);
+        }
+    }//GEN-LAST:event_btnPreActionPerformed
+
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        if(cPage < page){
+            cPage++;
+            loadData(cPage);
+            lblPage.setText(cPage +"/" +page);
+        }
+    }//GEN-LAST:event_btnNextActionPerformed
+
+    private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
+        if(cPage != page){
+            cPage = page;
+            loadData(cPage);
+            lblPage.setText(cPage +"/" +page);
+        }
+    }//GEN-LAST:event_btnLastActionPerformed
+
+    private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
+        if(cPage != 1){
+            cPage = 1;
+            loadData(cPage);
+            lblPage.setText(cPage +"/" +page);
+        }
+    }//GEN-LAST:event_btnFirstActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnFirst;
+    private javax.swing.JButton btnLast;
+    private javax.swing.JButton btnNext;
+    private javax.swing.JButton btnPre;
     private javax.swing.JComboBox<String> cmperiod;
     private com.toedter.calendar.JDateChooser dateFrom;
     private com.toedter.calendar.JDateChooser dateTo;
@@ -417,11 +516,13 @@ public class ReservationPanel extends javax.swing.JPanel implements CentralInter
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JLabel lblPage;
     private javax.swing.JTable tblPay;
     private javax.swing.JTable tblRes;
     private javax.swing.JTable tblSer;
@@ -446,9 +547,26 @@ public class ReservationPanel extends javax.swing.JPanel implements CentralInter
 
     @Override
     public void showData() {
+//        resmodel.setRowCount(0);
+//        resDAO = new ReservationDAO();
+//        resCollection = resDAO.getCollection();
+//        for (ReservationEntity resObj : resCollection) {
+//            row = new Vector();
+//            row.add(resObj.getResID());
+//            row.add(resObj.getCusID());
+//            row.add(resObj.getRoomID());
+//            row.add(resObj.getCheckInDate());
+//            row.add(resObj.getCheckOutDate());
+//            row.add(resObj.getRoomID());
+//            row.add(resObj.getPaid());
+//            row.add(resObj.getStatus());
+//            
+//            resmodel.addRow(row);
+//            tblRes.setAutoCreateRowSorter(true);
+//        }
+//        tblRes.setModel(resmodel);
         resmodel.setRowCount(0);
-        resDAO = new ReservationDAO();
-        resCollection = resDAO.getCollection();
+
         for (ReservationEntity resObj : resCollection) {
             row = new Vector();
             row.add(resObj.getResID());
