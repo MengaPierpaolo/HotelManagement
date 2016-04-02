@@ -5,13 +5,17 @@
  */
 package hung_RoomType;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.util.Vector;
 import javax.swing.JOptionPane;
+import projectinterface.CentralInterface;
 
 /**
  *
  * @author Admin
  */
-public class RoomTypeDialog extends javax.swing.JDialog {
+public class RoomTypeDialogUpdate extends javax.swing.JDialog {
 
     /**
      * Creates new form RoomTypeDialog
@@ -22,60 +26,35 @@ public class RoomTypeDialog extends javax.swing.JDialog {
     private String roomTypeNote;
     RoomTypeEntity roomTypeEntity;
     RoomTypeDAO roomTypeDAO;
-    RoomType roomType;
-//    public RoomTypeDialog(java.awt.Frame parent, boolean modal, RoomTypeEntity roomTypeEntity) {
-//        super(parent, modal);
-//        initComponents();
-//        this.roomTypeEntity = roomTypeEntity;
-//    }
-    public RoomTypeDialog(java.awt.Frame parent, boolean modal, RoomType roomType) {
+    public RoomTypeDialogUpdate(java.awt.Frame parent, boolean modal, RoomTypeEntity roomTypeEntity) {
         super(parent, modal);
         initComponents();
-        roomTypeDAO = new RoomTypeDAO();
-        this.roomType = roomType;
+        this.roomTypeEntity = roomTypeEntity;
+        setFiedFromEntity();
+        formDisplayCentral();
+        
     }
+
 //    public RoomTypeDialog(java.awt.Frame parent, boolean modal) {
 //        super(parent, modal);
 //        initComponents();
 //    }
     
     private void getTextFromField() {
-        checkNull();
-        
+       
+        this.roomTypeID = Integer.parseInt(labelID.getText());
         this.roomTypeName = txtRoomTypeName.getText();
         this.roomTypeRate = Double.parseDouble(txtRoomTypeRate.getText());
         this.roomTypeNote = txaRoomTypeNote.getText();
     }
     
     private void setFiedFromEntity() {
-        labelID.setText(String.valueOf(roomTypeEntity.getRoomTypeID()));
+        labelID.setText(String.valueOf(this.roomTypeEntity.getRoomTypeID()));
         txtRoomTypeName.setText(this.roomTypeEntity.getRoomTypeName());
         txtRoomTypeRate.setText(String.valueOf(this.roomTypeEntity.getRoomTypeRate()));
         txaRoomTypeNote.setText(this.roomTypeEntity.getRoomTypeNote());
     }
     
-    private boolean isNumber(String str) {
-        return str.matches("[0-9]+");
-    }
-    
-    private void checkNull() {
-        while(txtRoomTypeName.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Name can not be blank");
-            txtRoomTypeName.grabFocus();
-            return;
-        }
-        while(txtRoomTypeRate.getText().isEmpty() || isNumber(txtRoomTypeRate.getText()) == false ) {
-            JOptionPane.showMessageDialog(this, "Rate can not be blank and only number");
-            txtRoomTypeRate.grabFocus();
-            return;
-        }
-        while(txaRoomTypeNote.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Note can not be blank");
-            txaRoomTypeNote.grabFocus();
-            return;
-        }
-        JOptionPane.showMessageDialog(this, "all good");
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -129,8 +108,18 @@ public class RoomTypeDialog extends javax.swing.JDialog {
         });
 
         jButton2.setText("Reset");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Cancel");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         labelID.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -211,13 +200,27 @@ public class RoomTypeDialog extends javax.swing.JDialog {
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
         // TODO add your handling code here:
+        if(!checkEmptyField()) {
+            return;
+        }
         getTextFromField();
-
-        RoomTypeEntity roomTypeToAdd = new RoomTypeEntity(roomTypeID, roomTypeName, roomTypeRate, roomTypeNote);
-        roomTypeDAO.insert(roomTypeToAdd);
-        this.setVisible(false);
-        roomType.showData();
+        roomTypeDAO = new RoomTypeDAO();
+        RoomTypeEntity roomTypeToUpdate = new RoomTypeEntity(this.roomTypeID, this.roomTypeName, this.roomTypeRate, this.roomTypeNote);
+        roomTypeDAO.update(roomTypeToUpdate);
+        setVisible(false);
     }//GEN-LAST:event_btnApplyActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        txtRoomTypeName.setText("");
+        txtRoomTypeRate.setText("");
+        txaRoomTypeNote.setText("");
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -236,20 +239,21 @@ public class RoomTypeDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(RoomTypeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RoomTypeDialogUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(RoomTypeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RoomTypeDialogUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(RoomTypeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RoomTypeDialogUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RoomTypeDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RoomTypeDialogUpdate.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                RoomTypeDialog dialog = new RoomTypeDialog(new javax.swing.JFrame(), true, null);
+                RoomTypeDialogUpdate dialog = new RoomTypeDialogUpdate(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -277,4 +281,58 @@ public class RoomTypeDialog extends javax.swing.JDialog {
     private javax.swing.JTextField txtRoomTypeName;
     private javax.swing.JTextField txtRoomTypeRate;
     // End of variables declaration//GEN-END:variables
+
+    public void formDisplayCentral() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int w = this.getSize().width;
+        int h = this.getSize().height;
+        //setSize(screenSize.width,screenSize.height);
+        if(this.getSize().width!= screenSize.width && this.getSize().height!=screenSize.height)
+        setLocation((screenSize.width-w)/2, (screenSize.height-h)/2);
+    }
+    private boolean isNameExisted(String roomName) {
+        this.roomTypeID = Integer.parseInt(labelID.getText());
+        roomTypeDAO = new RoomTypeDAO();
+        Vector<RoomTypeEntity> vectorRoomType = roomTypeDAO.getRoomTypeCollection();
+        for(RoomTypeEntity entity : vectorRoomType) {
+            if(entity.getRoomTypeName().equals(roomName) && entity.getRoomTypeID() != this.roomTypeID) {
+                return true;
+            }
+        }
+       return false; 
+    }
+    private boolean isNumber(String str) {
+        return str.matches("^[-+]?[0-9]*.?[0-9]+$");
+    }
+    public boolean checkEmptyField() {
+        
+        if(txtRoomTypeName.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Name can not be blank");
+            txtRoomTypeName.grabFocus();
+            return false;
+        }
+        if(isNameExisted(txtRoomTypeName.getText())) {
+            JOptionPane.showMessageDialog(this, "This room type name exited");
+            txtRoomTypeName.grabFocus();
+            return false;
+        }
+        if(txtRoomTypeRate.getText().isEmpty()  ) {
+            JOptionPane.showMessageDialog(this, "Rate can not be blank ");
+            txtRoomTypeRate.grabFocus();
+            return false;
+        }
+        if(!isNumber(txtRoomTypeRate.getText())) {
+            JOptionPane.showMessageDialog(this, "Rate can only be number");
+            txtRoomTypeRate.grabFocus();
+            return false;
+        }
+        if(txaRoomTypeNote.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Note can not be blank");
+            txaRoomTypeNote.grabFocus();
+            return false;
+        }
+        JOptionPane.showMessageDialog(this, "All field vallit!!");
+        return true;
+    }
+
 }

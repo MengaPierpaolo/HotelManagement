@@ -6,6 +6,7 @@
 package hung_RoomType;
 
 import connection.DbConnect;
+import hung_Room.RoomEntity;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -23,6 +24,10 @@ public class RoomTypeDAO {
     ResultSet rs;
     String sql;
     
+    private int roomID;
+    private String roomName;
+    private String roomStatus;
+    
     private int    roomTypeID;
     private String roomTypeName;
     private double roomTypeRate;
@@ -39,10 +44,11 @@ public class RoomTypeDAO {
         roomTypeEntityCollection = new Vector<>();
     }
     
-    public Vector getCollection() {
+    public Vector getRoomTypeCollection() {
         try {
             sql = "select * from roomtype";
             rs = st.executeQuery(sql);
+            rs.beforeFirst();
             while(rs.next()) {
                 this.roomTypeID = rs.getInt(1);
                 this.roomTypeName = rs.getString(2);
@@ -52,7 +58,6 @@ public class RoomTypeDAO {
                 roomTypeEntity = new RoomTypeEntity(roomTypeID, roomTypeName, roomTypeRate, roomTypeNote);
                 roomTypeEntityCollection.add(roomTypeEntity);
             }
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,30 +74,49 @@ public class RoomTypeDAO {
     public void insert(RoomTypeEntity roomTypeEntity) {
         getTextFromEntity(roomTypeEntity);
         try {
-//            sql = "select * from roomtype";
-//            rs = st.executeQuery(sql);
+            rs.moveToInsertRow();
+            rs.updateString(2, this.roomTypeName);
+            rs.updateDouble(3, this.roomTypeRate);
+            rs.updateString(4, this.roomTypeNote);
+            rs.insertRow();
+            System.out.println("Done insert");
+//            sql = "insert into roomtype values ('"+this.roomTypeName+"', "+this.roomTypeRate+", '"+this.roomTypeNote+"')";
+
+//            st.executeQuery(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(RoomTypeEntity roomTypeEntity) {
+        getTextFromEntity(roomTypeEntity);
+        try {
+            sql = "update RoomType set RoomTypeName = '"+this.roomTypeName+
+                    "', RoomRate = "+this.roomTypeRate+", Note = '"+this.roomTypeNote+
+                    "' where RoomTypeID = "+this.roomTypeID;
+            st.executeUpdate(sql);
 //            rs.moveToInsertRow();
 //            rs.updateString(2, this.roomTypeName);
 //            rs.updateDouble(3, this.roomTypeRate);
 //            rs.updateString(4, this.roomTypeNote);
 //            rs.insertRow();
-//            System.out.println("Done");
-            sql = "insert into roomtype values ('"+this.roomTypeName+"', "+this.roomTypeRate+", '"+this.roomTypeNote+"')";
-            st.executeQuery(sql);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public void update(Object obj) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void delete(int roomTypeIDToDelete) {
+        try {
+            sql = "delete from roomtype where roomtypeid = "+ roomTypeIDToDelete;
+            st.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-    public void delete() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
+    
+    
     public Vector<Object> search(String sString) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }
