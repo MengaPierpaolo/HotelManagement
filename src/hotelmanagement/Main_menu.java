@@ -29,7 +29,8 @@ public class Main_menu extends javax.swing.JFrame {
      * Creates new form Main_menu
      */
     CardLayout cLayout;
-    
+    //sgsdklgjsdklgjlsd
+   
     public Main_menu() {
         initComponents();
         setTitle("Hotel Management");

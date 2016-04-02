@@ -5,7 +5,7 @@
  */
 package vu_guest;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  *
@@ -15,6 +15,29 @@ public class CustomerEnity {
     private String identifier,fullname,gender,company,address,phone,email,status;
     private Date age;
     private int cusID;
+    private int resid;
+
+    public CustomerEnity(String identifier, String fullname, String gender, String company, String address, String phone, String email, String status, Date age, int cusID, int resid) {
+        this.identifier = identifier;
+        this.fullname = fullname;
+        this.gender = gender;
+        this.company = company;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+        this.status = status;
+        this.age = age;
+        this.cusID = cusID;
+        this.resid = resid;
+    }
+
+    public int getResid() {
+        return resid;
+    }
+
+    public void setResid(int resid) {
+        this.resid = resid;
+    }
 
     public CustomerEnity(String identifier, String fullname, String gender, String company, String address, String phone, String email, String status, Date age, int cusID) {
         this.identifier = identifier;
@@ -38,6 +61,10 @@ public class CustomerEnity {
         this.email = email;
         this.status = status;
         this.age = age;
+    }
+
+    CustomerEnity(String identifier, String fullname, String gen, String company, String address, String phone, String email, String status, String dob) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     @Override
     public String toString(){

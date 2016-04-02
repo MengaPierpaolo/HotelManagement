@@ -6,7 +6,9 @@
 package vu_guest;
 
 
-import connection.DbConnect;
+
+
+
 import java.awt.Frame;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,11 +34,12 @@ import projectinterface.CentralInterface;
 public class Customer extends javax.swing.JPanel implements CentralInterface{
 
     private Frame JFrame;
-    DefaultTableModel cusmodel;
+    DefaultTableModel cusmodel,resmodel;
     Vector<CustomerEnity> cusEnity;
+    Vector<CustomerEnity> rescus;
     CustomerEnity cusObj;
     CustomerDao cusdao;
-    Vector header,data,row;
+    Vector header,data,row,rheader,rdata,rrow;
     String identifier,fullname,gen,company,address,phone,email,status;
     Date age;
     int cusid;
@@ -46,9 +49,8 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
      * Creates new form Customer
      */
     public Customer() {
-        initComponents();
-        cusdao=new CustomerDao();
-        cusEnity=cusdao.getCollection();
+        initComponents();     
+        
         header=new Vector();
         data=new Vector();
         header.add("Customer ID");
@@ -60,7 +62,8 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         header.add("Address");
         header.add("Phone");
         header.add("Email");
-        header.add("Status");
+        header.add("Status");   
+                
         cusmodel=new DefaultTableModel(data,header){
             @Override
             public boolean isCellEditable(int rows,int column){
@@ -72,9 +75,35 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         showData();
         bedit.setEnabled(false);
         
+        rheader=new Vector();
+        rdata=new Vector();
+        rheader.add("Reservation ID");
+        rheader.add("Customer ID");
+        rheader.add("Full Name");
+               
+        resmodel=new DefaultTableModel(rdata,rheader){
+            @Override
+            public boolean isCellEditable(int rows,int column){
+                return false;
+            }
+            
+        };
+        restable.setModel(resmodel);
+        showres();
+    }
+    public void showres(){
+            resmodel.setRowCount(0);
+            cusdao=new CustomerDao();
+            cusEnity=cusdao.rescus();
+            for (CustomerEnity cus : cusEnity) {
+                rrow=new Vector();
+                rrow.addElement(cus.getResid());
+                rrow.addElement(cus.getCusID());
+                rrow.addElement(cus.getFullname());
+                rdata.add(rrow);
+            }
     }
     
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -101,6 +130,10 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         jPanel2 = new javax.swing.JPanel();
         badd = new javax.swing.JButton();
         bedit = new javax.swing.JButton();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        restable = new javax.swing.JTable();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -185,7 +218,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(tidentifier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(467, Short.MAX_VALUE))
+                .addContainerGap(456, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.LINE_START);
@@ -208,6 +241,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
 
             }
         ));
+        custable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         custable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 custableMouseClicked(evt);
@@ -237,20 +271,48 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         });
         jPanel2.add(bedit);
 
+        restable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        restable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        jScrollPane2.setViewportView(restable);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 63, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Detail", jPanel6);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(87, 87, 87))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1))
         );
 
         jTabbedPane2.addTab("Customers", jPanel5);
@@ -272,7 +334,8 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
     private void baddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_baddActionPerformed
         Addcustomer add=new Addcustomer(JFrame, true);
         add.setVisible(true);
-        
+        showData();
+        showres();
         
     }//GEN-LAST:event_baddActionPerformed
 
@@ -407,14 +470,15 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
                 }
                 if(evt.getClickCount()==2){
                 
-                CustomerEnity cusObj=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age, cusid);
+                CustomerEnity cusObj=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, (java.sql.Date) age, cusid);
                 Addcustomer add=new Addcustomer(JFrame, true);
                 if(cusObj==null){
                     return;
                 }
                 add.showupdate(cusObj,false);
                 add.setVisible(true);
-                
+                showData();
+                showres();
                 }
                 
                 
@@ -422,7 +486,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
     }//GEN-LAST:event_custableMouseClicked
 
     private void beditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_beditMouseClicked
-        int i=custable.getSelectedRow();
+                int i=custable.getSelectedRow();
                 int b=custable.getSelectedColumn();
                 cusid = (int) custable.getValueAt(i, 0);
                 identifier = (String) custable.getValueAt(i, 1);
@@ -441,14 +505,15 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
                 }
                 if(evt.getClickCount()==1){
                 
-                CustomerEnity cusObj=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age, cusid);
+                CustomerEnity cusObj=new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, (java.sql.Date) age, cusid);
                 Addcustomer add=new Addcustomer(JFrame, true);
                 if(cusObj==null){
                     return;
                 }
                 add.showupdate(cusObj,false);
                 add.setVisible(true);
-                
+                showData();
+                showres();
                 }
                 
     }//GEN-LAST:event_beditMouseClicked
@@ -467,13 +532,17 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JTable restable;
     private javax.swing.JTextField tidentifier;
     private javax.swing.JTextField tname;
     private javax.swing.JTextField tphone;
     // End of variables declaration//GEN-END:variables
-
+    
     @Override
     public void formDisplayCentral() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -483,24 +552,29 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
 
     @Override
     public void showData() {
-           int i =0;
-            while(i<cusEnity.size()){
+        
+            //data = new Vector();
+            cusmodel.setRowCount(0);
+            cusdao = new CustomerDao();
+            cusEnity=cusdao.getCollection();
+            for (CustomerEnity cus : cusEnity) {
             row=new Vector();
-            row.addElement(cusEnity.get(i).getCusID());
-            row.addElement(cusEnity.get(i).getIdentifier());
-            row.addElement(cusEnity.get(i).getAge());
-            row.addElement(cusEnity.get(i).getFullname());
-            row.addElement(cusEnity.get(i).getGender());
-            row.addElement(cusEnity.get(i).getCompany());
-            row.addElement(cusEnity.get(i).getAddress());
-            row.addElement(cusEnity.get(i).getPhone());
-            row.addElement(cusEnity.get(i).getEmail());
-            row.addElement(cusEnity.get(i).getStatus());
+            row.addElement(cus.getCusID());
+            row.addElement(cus.getIdentifier());
+            row.addElement(cus.getAge());
+            row.addElement(cus.getFullname());
+            row.addElement(cus.getGender());
+            row.addElement(cus.getCompany());
+            row.addElement(cus.getAddress());
+            row.addElement(cus.getPhone());
+            row.addElement(cus.getEmail());
+            row.addElement(cus.getStatus());
             data.add(row);
-            i++;
+            
             custable.setAutoCreateRowSorter(true);
-        } 
-     
+        }
+            
+            
     }       
 
     @Override
