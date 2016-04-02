@@ -401,7 +401,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         phone = tphone.getText();
         email = temail1.getText();
         status = cmStatus.getSelectedItem().toString();
-        
+        //day la cai j
         //Date age = tage.getDateFormatString();
         
         cusenity = new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age);
