@@ -104,19 +104,7 @@ public class CustomerDao implements DAOConnection{
     public void delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-//    public static void main(String[] args) {
-//        CustomerDao cusDAO = new CustomerDao();
-//        Vector<CustomerEnity> collection = cusDAO.getCollection();
-//        for (CustomerEnity customer : collection) {
-//            System.out.println(customer.toString());
-//        }
-//        CustomerEnity objCus = new CustomerEnity("00000000", "Lai Van Trach", "M", "Neilsen", "Ha huy giap -Q12-HCM", "01283477050", "laivantrachg@mail", "New", new Date(152000));
-//        cusDAO.insert((Object) objCus);
-//        collection = cusDAO.getCollection();
-//        for (CustomerEnity customer : collection) {
-//            System.out.println(customer.toString());
-//        }
-//    }
+
 
     @Override
     public Vector<Object> search(String sString) {
