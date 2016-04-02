@@ -8,6 +8,7 @@ package hung_Room;
 import connection.DbConnect;
 import hung_RoomType.RoomTypeEntity;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Vector;
@@ -65,6 +66,25 @@ public class RoomDAO implements DAOConnection{
             e.printStackTrace();
         }
         return roomTypeEntityCollection;
+    }
+    public RoomEntity searchRoom(String rName) {
+        try {
+            sql = "select * from Rooms where roomname= ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, rName);
+            rs = pstmt.executeQuery();
+            rs.next();
+            this.roomID = rs.getInt(1);
+            this.roomName = rs.getString(2);
+            this.roomTypeID = rs.getInt(3);
+            this.roomStatus = rs.getString(4);
+
+            roomEntity = new RoomEntity(roomID, roomName, roomTypeID, roomStatus);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return roomEntity;
     }
     
     @Override

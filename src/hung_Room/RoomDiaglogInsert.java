@@ -86,7 +86,7 @@ public class RoomDiaglogInsert extends javax.swing.JDialog implements CentralInt
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel1.setText("Add Room");
+        jLabel1.setText("Insert Room");
 
         jLabel2.setText("Room Name:");
 
@@ -106,6 +106,7 @@ public class RoomDiaglogInsert extends javax.swing.JDialog implements CentralInt
         txaStatus.setRows(5);
         jScrollPane1.setViewportView(txaStatus);
 
+        btnInsert.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/ok24.png"))); // NOI18N
         btnInsert.setText("Insert");
         btnInsert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -113,6 +114,7 @@ public class RoomDiaglogInsert extends javax.swing.JDialog implements CentralInt
             }
         });
 
+        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/Iconic_26d4(0)_24.png"))); // NOI18N
         btnReset.setText("Reset");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,6 +122,7 @@ public class RoomDiaglogInsert extends javax.swing.JDialog implements CentralInt
             }
         });
 
+        btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/cancel24.png"))); // NOI18N
         btnCancel.setText("Cancel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -149,7 +152,7 @@ public class RoomDiaglogInsert extends javax.swing.JDialog implements CentralInt
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(cbRoomType, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(129, 129, 129)
+                        .addGap(153, 153, 153)
                         .addComponent(jLabel1)))
                 .addGap(31, 31, 31))
         );

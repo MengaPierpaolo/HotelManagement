@@ -43,7 +43,7 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
         data = new Vector();
         roomTypeListModel = new DefaultTableModel();
         roomTypeDetailsModel = new DefaultTableModel();
-        
+        setHeaderList();
         setHeaderDetail();
         showData();
     }
@@ -57,40 +57,7 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
         tblRoomTypeList.setModel(roomTypeListModel);
     }
     
-    private void setDetailsModel(int roomTypeIDdetail, double roomTypeRateDetails, String roomTypeNameDetails) {
-
-        roomDOA = new RoomDAO();
-        roomTypeDOA = new RoomTypeDAO();
-        
-        roomEntityCollection = roomDOA.getCollection();
-        roomTypeEntityCollection = roomTypeDOA.getRoomTypeCollection();
-        
-        Vector row;
-        for(RoomEntity entity : roomEntityCollection) {
-            if(entity.getRoomTypeID() == roomTypeIDdetail) {
-                row = new Vector();
-                row.add(entity.getRoomID());
-                row.add(entity.getRoomName());
-                row.add(entity.getRoomStatus());
-                row.add(roomTypeRateDetails);
-                row.add(roomTypeNameDetails);
-                dataDetails.add(row);
-            }
-        }
-        roomTypeDetailsModel.setDataVector(dataDetails, headerDetails);
-        tblRoomTypeDetail.setModel(roomTypeListModel);
-    }
-    private void setHeaderDetail() {
-        headerDetails = new Vector();
-        dataDetails = new Vector();
-        headerDetails.add("Room ID");
-        headerDetails.add("Room Name");
-        headerDetails.add("Room Status");
-        headerDetails.add("Room Rate");
-        headerDetails.add("Room TypeName");
-        roomTypeDetailsModel.setDataVector(dataDetails, headerDetails);
-        tblRoomTypeDetail.setModel(roomTypeDetailsModel);
-    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -148,9 +115,14 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
         jLabel2.setVerifyInputWhenFocusTarget(false);
         jPanel3.add(jLabel2);
 
-        jButton1.setText("Search");
+        jButton1.setText("   Search");
         jButton1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jButton1.setMargin(new java.awt.Insets(2, 0, 2, 0));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -158,21 +130,20 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel7))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jTextField2))))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jTextField2))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,7 +159,7 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(368, Short.MAX_VALUE))
+                .addContainerGap(401, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.LINE_START);
@@ -251,11 +222,12 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 95, Short.MAX_VALUE))
+                .addGap(0, 84, Short.MAX_VALUE))
         );
 
         jTabbedPane3.addTab("Details", jPanel6);
 
+        btnInsert.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/add24.png"))); // NOI18N
         btnInsert.setText("Insert");
         btnInsert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -263,6 +235,7 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
             }
         });
 
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/Iconic_26d4(0)_24.png"))); // NOI18N
         jButton2.setText("Delete");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -270,6 +243,7 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
             }
         });
 
+        btnUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/edit.png"))); // NOI18N
         btnUpdate.setText("Update");
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -277,6 +251,7 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
             }
         });
 
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/Entypo_d83d(1)_24.png"))); // NOI18N
         jButton3.setText("Details");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -292,13 +267,15 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnInsert, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jButton3))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnInsert, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -311,10 +288,10 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
                         .addGap(23, 23, 23)
                         .addComponent(jButton2)
                         .addGap(23, 23, 23)
-                        .addComponent(btnUpdate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)))
-                .addGap(26, 26, 26)
+                        .addComponent(btnUpdate)))
+                .addGap(31, 31, 31)
+                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane3)
                 .addContainerGap())
         );
@@ -354,7 +331,7 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
         roomTypeDialog.setVisible(true);
         showData();
     }//GEN-LAST:event_btnUpdateActionPerformed
-
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         int rowToDelete = tblRoomTypeList.getSelectedRow();
@@ -398,9 +375,47 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
         int roomTypeIDDetails = (int)tblRoomTypeList.getValueAt(index, 0);
         double roomRateDetails = (double)tblRoomTypeList.getValueAt(index, 2);
         String roomTypeNameDetails = (String)tblRoomTypeList.getValueAt(index, 1);
+        
         setDetailsModel(roomTypeIDDetails, roomRateDetails, roomTypeNameDetails);
-        System.out.println("Index: "+index + "\tID: "+roomTypeIDDetails);
     }//GEN-LAST:event_jButton3ActionPerformed
+    
+    private void setDetailsModel(int roomTypeIDdetail, double roomTypeRateDetails, String roomTypeNameDetails) {
+        setHeaderDetail();
+        
+        roomDOA = new RoomDAO();
+        roomTypeDOA = new RoomTypeDAO();
+        
+        roomEntityCollection = roomDOA.getCollection();
+        roomTypeEntityCollection = roomTypeDOA.getRoomTypeCollection();
+        
+        Vector row;
+        for(RoomEntity entity : roomEntityCollection) {
+            if(entity.getRoomTypeID() == roomTypeIDdetail) {
+                row = new Vector();
+                row.add(entity.getRoomID());
+                row.add(entity.getRoomName());
+                row.add(entity.getRoomStatus());
+                row.add(roomTypeRateDetails);
+                row.add(roomTypeNameDetails);
+                dataDetails.add(row);
+            }
+        }
+    }
+    private void setHeaderDetail() {
+        headerDetails = new Vector();
+        dataDetails = new Vector();
+        headerDetails.add("Room ID");
+        headerDetails.add("Room Name");
+        headerDetails.add("Room Status");
+        headerDetails.add("Room Rate");
+        headerDetails.add("Room TypeName");
+        roomTypeDetailsModel.setDataVector(dataDetails, headerDetails);
+        tblRoomTypeDetail.setModel(roomTypeDetailsModel);
+    }
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -439,7 +454,6 @@ public class RoomType extends javax.swing.JPanel implements CentralInterface{
 
     @Override
     public void showData() {
-        setHeaderList();
         roomTypeListModel.setRowCount(0);
         roomTypeDOA = new RoomTypeDAO();
         roomTypeEntityCollection = new Vector<>(roomTypeDOA.getRoomTypeCollection());
