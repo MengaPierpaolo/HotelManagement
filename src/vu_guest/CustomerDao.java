@@ -123,7 +123,6 @@ public class CustomerDao implements DAOConnection{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public Vector<CustomerEnity> rescus() {
         try {
             sql="select * from Customer c,Reservation r where r.CustomerID=c.CustomerID";
