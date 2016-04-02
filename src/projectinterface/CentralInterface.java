@@ -14,4 +14,5 @@ public interface CentralInterface {
     public void formDisplayCentral();
     public boolean checkEmptyField();
     public void showData();
+    
 }

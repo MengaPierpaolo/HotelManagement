@@ -13,7 +13,7 @@ import java.util.Vector;
  * @author Administrator
  */
 public interface DAOConnection {
-    
+    public Vector rescus();
     public Vector getCollection();
     public void insert(Object obj);
     public void update(Object obj);

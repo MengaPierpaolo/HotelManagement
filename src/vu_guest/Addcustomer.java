@@ -7,15 +7,10 @@ package vu_guest;
 
 
 import com.toedter.calendar.JDateChooser;
-import connection.DbConnect;
 import hotelmanagement.Main_menu;
+import hung_room.RoomEntity;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.Date;
-import vu_guest.CustomerEnity;
-
-
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import projectinterface.CentralInterface;
@@ -29,22 +24,29 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
     /**
      * Creates new form Addcustomer
-     */
+     */ RoomEntity roomenity;
         CustomerEnity cusenity;
         CustomerDao cusDao;
-        DefaultComboBoxModel cmModel;
+        Customer custo;
+        DefaultComboBoxModel cmModel,rmodel;
         String fullname,gen,address,company,phone,email,status,identifier;
-        Date dob;
         int pphone,iidentifier;
         String cusid; int id;
+        
+        
         public Addcustomer(java.awt.Frame parent, boolean modal) {
             super(parent, modal);
             initComponents();
+            
+            this.custo=custo;
             setTitle("Add Customer");
             cmModel = new DefaultComboBoxModel(new Object[] {"New","Old"});
             cmStatus.setModel(cmModel);
             formDisplayCentral();
-            txtID.setEnabled(false);
+            txtID.setVisible(false);
+            customerid.setVisible(false);
+            bup.setVisible(false);
+            txtID.setText("-1");
             
             
 //            showData();
@@ -52,10 +54,13 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
             
         }
 
+    
+
         public void showupdate(Object obj,boolean update){
             
-            if(!update) btnAddPay.setEnabled(false);
+            if(!update) btnAddPay.setVisible(false);setTitle("Update Customer");bup.setVisible(true);
             CustomerEnity cusObj = (CustomerEnity) obj;
+            
             if(cusObj !=null){
                 id = cusObj.getCusID();
                 txtID.setText(String.valueOf(id));
@@ -113,7 +118,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jButton4 = new javax.swing.JButton();
         temail1 = new javax.swing.JTextField();
         txtID = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
+        customerid = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -131,7 +136,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jLabel1.setText("Full Name *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel1, gridBagConstraints);
@@ -140,7 +145,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jLabel2.setText("Date Of Birth *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel2, gridBagConstraints);
@@ -158,25 +163,25 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jLabel4.setText("Phone *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel4, gridBagConstraints);
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-        jLabel5.setText("Email");
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        jLabel5.setText("Email *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel5, gridBagConstraints);
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-        jLabel6.setText("Gender");
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        jLabel6.setText("Gender *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel6, gridBagConstraints);
@@ -188,7 +193,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 1;
         gridBagConstraints.ipady = 1;
@@ -198,7 +203,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jPanel3.add(tname, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(tphone, gridBagConstraints);
@@ -206,11 +211,11 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         tage.setAlignmentX(0.0F);
         tage.setAlignmentY(0.0F);
         tage.setAutoscrolls(true);
-        tage.setDateFormatString("yyyy.MMMMM.dd");
+        tage.setDateFormatString("yyyy-MM-dd");
         tage.setDoubleBuffered(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(tage, gridBagConstraints);
@@ -229,13 +234,13 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jLabel7.setText("Person Indentifier *");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel7, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(tidentifier, gridBagConstraints);
@@ -249,7 +254,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 0);
         jPanel3.add(tmale, gridBagConstraints);
@@ -263,7 +268,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(tfemale, gridBagConstraints);
@@ -287,7 +292,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         jLabel9.setText("Status");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(jLabel9, gridBagConstraints);
@@ -295,7 +300,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         cmStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(cmStatus, gridBagConstraints);
@@ -339,30 +344,30 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.gridwidth = 2;
         jPanel3.add(jPanel1, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(temail1, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
         jPanel3.add(txtID, gridBagConstraints);
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel10.setText("CustomerID");
+        customerid.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        customerid.setText("CustomerID");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(9, 31, 9, 31);
-        jPanel3.add(jLabel10, gridBagConstraints);
+        jPanel3.add(customerid, gridBagConstraints);
 
         jPanel2.add(jPanel3);
 
@@ -383,26 +388,27 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
     private void tnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tnameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tnameActionPerformed
-
+    
     private void btnAddPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPayActionPerformed
         //identifier,fullname,gender,company,address,phone,email,status;
+        if(!checkEmptyField())return;
         fullname = tname.getText();
         identifier= tidentifier.getText();
-        dob=new java.util.Date();
-        java.sql.Date age = new java.sql.Date(dob.getTime());
+        java.sql.Date age = new java.sql.Date(tage.getDate().getTime());
         gen = (tmale.isSelected())?"M": "F";
         address = taAdrress.getText();
         company = tcompany.getText();
         phone = tphone.getText();
-        email = txtID.getText();
+        email = temail1.getText();
         status = cmStatus.getSelectedItem().toString();
-        if(!checkEmptyField())return;
+        
         //Date age = tage.getDateFormatString();
         
         cusenity = new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age);
         cusDao = new CustomerDao();
-        cusDao.insert((Object) cusenity);
+        cusDao.insert((Object) cusenity);    
         JOptionPane.showMessageDialog(this,"Add succesfully");
+        //custo.showData();
         setVisible(false);
     }//GEN-LAST:event_btnAddPayActionPerformed
 
@@ -415,25 +421,25 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
     }//GEN-LAST:event_tfemaleActionPerformed
 
     private void bupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bupActionPerformed
+        if(!checkEmptyField())return;
         fullname = tname.getText();
         identifier= tidentifier.getText();
         cusid=txtID.getText();
-        dob=new java.util.Date();
-        java.sql.Date age = new java.sql.Date(dob.getTime());
+        java.sql.Date age = new java.sql.Date(tage.getDate().getTime());
         gen = (tmale.isSelected())?"M": "F";
         address = taAdrress.getText();
         company = tcompany.getText();
         phone = tphone.getText();
         email = temail1.getText();
         status = cmStatus.getSelectedItem().toString();
-        if(!checkEmptyField())return;
+        
         //Date age = tage.getDateFormatString();
         
         cusenity = new CustomerEnity(identifier, fullname, gen, company, address, phone, email, status, age,Integer.parseInt(cusid));
         cusDao = new CustomerDao();
         cusDao.update((Object) cusenity);
         JOptionPane.showMessageDialog(this,"Update successfull");
-        
+//        custo.showData();
         setVisible(false);
     }//GEN-LAST:event_bupActionPerformed
 
@@ -441,7 +447,44 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
         setVisible(false);
     
     }//GEN-LAST:event_jButton4ActionPerformed
-
+    public boolean isidentifier(String str){
+        return (str.matches("[0-9]{9,10}"));
+    }
+    public boolean isphone(String str){
+        return (str.matches("[0-9]{10,11}"));
+    }
+    public boolean isemail(String str){
+        return (str.matches("^\\w+\\.?\\w*@\\w+\\.\\w+\\.?\\w{2,4}$"));
+    }
+    private boolean checkphone(String phoneToCheck) {
+        cusDao = new CustomerDao();
+        for(CustomerEnity cus : cusDao.getCollection()) {
+            if(cus.getPhone().equalsIgnoreCase(phoneToCheck)&& cus.getCusID() != Integer.parseInt(txtID.getText()) ) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    private boolean checkidenifier(String identifiertocheck) {
+        cusDao = new CustomerDao();
+        for(CustomerEnity cus : cusDao.getCollection()) {
+            if(cus.getIdentifier().equalsIgnoreCase(identifiertocheck) && cus.getCusID() != Integer.parseInt(txtID.getText()) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean checkemail(String mailtocheck) {
+        cusDao = new CustomerDao();
+        for(CustomerEnity cus : cusDao.getCollection()) {
+            if(cus.getEmail().equalsIgnoreCase(mailtocheck)&& cus.getCusID() != Integer.parseInt(txtID.getText())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -489,9 +532,9 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
     private javax.swing.JButton bup;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cmStatus;
+    private javax.swing.JLabel customerid;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -535,7 +578,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
     @Override
     public boolean checkEmptyField() {
-        if(fullname.isEmpty()){
+        if(tname.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Name cannot blank");
             tname.grabFocus();
             return false;
@@ -548,55 +591,75 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
             
             return false;
         }
-        if(identifier.isEmpty()){
+        if(tidentifier.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Identifier cannot blank");
             tidentifier.grabFocus();
             return false;
         }
-        if(identifier.length()>10){
-            JOptionPane.showMessageDialog(this, "Person Identifier must < 10 number");
+            
+        if(!isidentifier(tidentifier.getText())){
+            JOptionPane.showMessageDialog(this, "Identifier must 9-10 number");
             tidentifier.setText("");
             tidentifier.grabFocus();
             return false;
         }
-        try {
-                iidentifier=Integer.parseInt(identifier);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Person Identifier is must number");
-                tidentifier.setText("");
-                tidentifier.grabFocus();
-                return false;
-            }
-        
-        
-        if(phone.isEmpty()){
+        if(checkidenifier(tidentifier.getText())) {
+            JOptionPane.showMessageDialog(this, "Identifier duplicate");
+            tidentifier.setText("");
+            tidentifier.grabFocus();
+            return false;
+        }
+        if(tphone.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Phone cannot blank");
             tphone.grabFocus();
             return false;
         }
-        if(phone.length()>11){
-            JOptionPane.showMessageDialog(this, "Phone must < 10 digit");
+        
+        if(!isphone(tphone.getText())){
+            JOptionPane.showMessageDialog(this, "Phone must 10-11 number");
             tphone.setText("");
             tphone.grabFocus();
             return false;
         }
-        try {
-                pphone=Integer.parseInt(phone);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Phone is must digit");
-                tphone.setText("");
-                tphone.grabFocus();
-                return false;
-            }
+        if(checkphone(tphone.getText())) {
+            JOptionPane.showMessageDialog(this, "Phone duplicate");
+            tphone.setText("");
+            tphone.grabFocus();
+            return false;
+        }
         if(!tmale.isSelected()&&!tfemale.isSelected()){
             JOptionPane.showMessageDialog(this, "Gender must select");
             return false;
         }
+        if(temail1.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Email cannot blank");
+            temail1.grabFocus();
+            return false;
+        }
+        if(!isemail(temail1.getText())){
+            JOptionPane.showMessageDialog(this, "Email example:abc@gmail.com");
+            temail1.setText("");
+            temail1.grabFocus();
+            return false;
+        }
+        if(checkemail(temail1.getText())) {
+            JOptionPane.showMessageDialog(this, "Email duplicate");
+            temail1.setText("");
+            temail1.grabFocus();
+            return false;
+        }
+//        if(tcompany.getText().length()>10){
+//            JOptionPane.showMessageDialog(this, "Lenghth of company must <10");
+//            tcompany.setText("");
+//            tcompany.grabFocus();
+//            return false;
+//        }
+        
         
         return true;
     }
 
-    
+       
 
 
 }
