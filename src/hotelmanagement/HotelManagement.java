@@ -7,10 +7,8 @@ package hotelmanagement;
 
 import room.RoomPane;
 
-/**
- *
- * @author Administrator
- */
+ 
+
 public class HotelManagement {
 
     /**
@@ -19,6 +17,7 @@ public class HotelManagement {
     public static void main(String[] args) {
         // TODO code application logic here
         new RoomPane().setVisible(true);
+        // hello
     }
     
 }
