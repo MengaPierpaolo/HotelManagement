@@ -28,7 +28,7 @@ public class DbConnect {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             con = DriverManager.getConnection(url, userName, password);
-            stsm = con.createStatement();
+            stsm = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
         } catch (Exception ex) {
             //JOptionPane.showMessageDialog(null, ex.getMessage());
             ex.printStackTrace();

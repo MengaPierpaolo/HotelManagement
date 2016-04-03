@@ -26,7 +26,7 @@ public class CustomerDao implements DAOConnection{
     Statement st;
     ResultSet rs;
     String sql;
-    String identifier,fullname,gender,company,address,phone,email,status;
+    String identifier,fullname,gender,company,address,phone,email,status,roomname;
     Date age;
     int cusID,resid;
     
@@ -113,13 +113,13 @@ public class CustomerDao implements DAOConnection{
 
     public Vector<CustomerEnity> rescus() {
         try {
-            sql="select * from Customer c,Reservation r where r.CustomerID=c.CustomerID";
+            sql="select * from Customer c,Reservation r,Rooms o  where c.CustomerID=r.CustomerID and o.RoomID=r.RoomID";
             rs=st.executeQuery(sql);
             while(rs.next()){
-                cusID=rs.getInt(1);
+                roomname=rs.getString(20);
                 fullname=rs.getString(4);
                 resid=rs.getInt(11);
-                cus=new CustomerEnity(identifier, fullname, gender, company, address, phone, email, status, (java.sql.Date) age, cusID, resid);
+                cus=new CustomerEnity(fullname, cusID, resid, roomname);
                 cuscollection.add(cus);
                 
             }
