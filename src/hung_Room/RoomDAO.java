@@ -42,7 +42,7 @@ public class RoomDAO implements DAOConnection{
     Vector<RoomTypeEntity> roomTypeEntityCollection;
 
     public RoomDAO() {
-        db = new DbConnect("sa", "vanhung91");
+        db = new DbConnect("sa", "");
         db.createConnect();
         st = db.getStsm();
         roomEntityCollection = new Vector<>();

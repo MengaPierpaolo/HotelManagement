@@ -8,7 +8,6 @@ package vu_guest;
 
 import com.toedter.calendar.JDateChooser;
 import hotelmanagement.Main_menu;
-import hung_room.RoomEntity;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.DefaultComboBoxModel;
@@ -24,7 +23,7 @@ public class Addcustomer extends javax.swing.JDialog implements CentralInterface
 
     /**
      * Creates new form Addcustomer
-     */ RoomEntity roomenity;
+     */ 
         CustomerEnity cusenity;
         CustomerDao cusDao;
         Customer custo;

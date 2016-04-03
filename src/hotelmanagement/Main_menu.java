@@ -8,7 +8,6 @@ package hotelmanagement;
 
 import connection.DbConnect1;
 import hung_Room.Room;
-import hung_room.RoomType;
 import vu_guest.Customer;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -602,8 +601,8 @@ public class Main_menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRoomRateActionPerformed
 
     private void btnEmptyRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmptyRoomActionPerformed
-        //  cEditable.add(new EmptyRoomPanel(),"emp");
-        // cLayout.show(cEditable, "emp");
+          cEditable.add(new EmptyRoomPanel(),"emp");
+         cLayout.show(cEditable, "emp");
 
 //        if(tabb_main.getTabCount()!=0)
 //             tabb_main.removeAll();
@@ -636,8 +635,8 @@ public class Main_menu extends javax.swing.JFrame {
 
     private void btnRoomTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRoomTypeActionPerformed
         // TODO add your handling code here:
-        //cEditable.add(new hung_RoomType.RoomType(),"RoomType");
-        // cLayout.show(cEditable, "RoomType");
+        cEditable.add(new hung_RoomType.RoomType(),"RoomType");
+         cLayout.show(cEditable, "RoomType");
     }//GEN-LAST:event_btnRoomTypeActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed

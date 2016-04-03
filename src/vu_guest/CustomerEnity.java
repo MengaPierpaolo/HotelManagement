@@ -12,24 +12,20 @@ import java.sql.Date;
  * @author KeVin
  */
 public class CustomerEnity {
-    private String identifier,fullname,gender,company,address,phone,email,status;
+    private String identifier,fullname,gender,company,address,phone,email,status,roomname;
     private Date age;
     private int cusID;
     private int resid;
+    
 
-    public CustomerEnity(String identifier, String fullname, String gender, String company, String address, String phone, String email, String status, Date age, int cusID, int resid) {
-        this.identifier = identifier;
+    public CustomerEnity(String fullname, int cusID, int resid, String roomname) {
         this.fullname = fullname;
-        this.gender = gender;
-        this.company = company;
-        this.address = address;
-        this.phone = phone;
-        this.email = email;
-        this.status = status;
-        this.age = age;
         this.cusID = cusID;
         this.resid = resid;
+        this.roomname = roomname;
     }
+
+   
 
     public int getResid() {
         return resid;
@@ -150,6 +146,14 @@ public class CustomerEnity {
 
     public void setCusID(int cusID) {
         this.cusID = cusID;
+    }
+
+    public String getRoomname() {
+        return roomname;
+    }
+
+    public void setRoomname(String roomname) {
+        this.roomname = roomname;
     }
     
 }

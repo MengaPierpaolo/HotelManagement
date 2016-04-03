@@ -20,11 +20,11 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.view.JasperViewer;
+//import net.sf.jasperreports.engine.JasperCompileManager;
+//import net.sf.jasperreports.engine.JasperFillManager;
+//import net.sf.jasperreports.engine.JasperPrint;
+//import net.sf.jasperreports.engine.JasperReport;
+//import net.sf.jasperreports.view.JasperViewer;
 import projectinterface.CentralInterface;
 
 /**
@@ -78,7 +78,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
         rheader=new Vector();
         rdata=new Vector();
         rheader.add("Reservation ID");
-        rheader.add("Customer ID");
+        rheader.add("Room Name");
         rheader.add("Full Name");
                
         resmodel=new DefaultTableModel(rdata,rheader){
@@ -98,7 +98,7 @@ public class Customer extends javax.swing.JPanel implements CentralInterface{
             for (CustomerEnity cus : cusEnity) {
                 rrow=new Vector();
                 rrow.addElement(cus.getResid());
-                rrow.addElement(cus.getCusID());
+                rrow.addElement(cus.getRoomname());
                 rrow.addElement(cus.getFullname());
                 rdata.add(rrow);
             }

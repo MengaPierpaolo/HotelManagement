@@ -224,7 +224,7 @@ public class RoomDiaglogUpdate extends javax.swing.JDialog implements CentralInt
         }
         getDataFromForm();
         roomEntity = new RoomEntity(roomID, roomName, roomTypeID, roomStatus);
-        System.out.println("ID:"+ roomID +"\tName: "+ roomName+"\tTypeID:"+ roomTypeID +"\tSta: "+ roomStatus);
+//        System.out.println("ID:"+ roomID +"\tName: "+ roomName+"\tTypeID:"+ roomTypeID +"\tSta: "+ roomStatus);
         
         roomDAO = new RoomDAO();
         roomDAO.update(roomEntity);

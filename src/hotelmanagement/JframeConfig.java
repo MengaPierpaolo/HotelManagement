@@ -224,10 +224,11 @@ public class JframeConfig extends javax.swing.JFrame {
         //     return;
         //    }
         pass = txtPassword.getText().trim();
-        if (!pass.equalsIgnoreCase("")) {
-            JOptionPane.showConfirmDialog(this, "Please enter your pass server again");
-            return;
-        }
+        
+//        if (!pass.equalsIgnoreCase("")) {
+//            JOptionPane.showConfirmDialog(this, "Please enter your pass server again");
+//            return;
+//        }
         dbName = txtDatabasename.getText().trim();
         if (dbName.equals("")) {
             getError("Database Name cannot be blank. Pls re-enter");
