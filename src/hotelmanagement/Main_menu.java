@@ -5,8 +5,6 @@
  */
 package hotelmanagement;
 
-
-import connection.DbConnect1;
 import hung_Room.Room;
 import vu_guest.Customer;
 import java.awt.CardLayout;
@@ -20,6 +18,7 @@ import trach_reservations.ReservationPanel;
 import room.RoomPane;
 import trach_reservations.EmptyRoomPanel;
 import vu_guest.Addcustomer;
+import vu_guest.CustomerDao;
 
 /**
  *
@@ -29,14 +28,12 @@ public class Main_menu extends javax.swing.JFrame {
 
     private Frame JFrame;
     CardLayout cLayout;
-    DbConnect1 objCon;
     String userName, pass, roleN;
 
-    public Main_menu(String user, String pass, String role, DbConnect1 objCon) {
+    public Main_menu(String user, String pass, String role) {
         initComponents();
         this.userName = user;
         this.pass = pass;
-        this.objCon = objCon;
         this.roleN = role;
         setTitle("Hotel Management");
 
@@ -77,7 +74,7 @@ public class Main_menu extends javax.swing.JFrame {
         btnRooms.setEnabled(check);
         btnRoomType.setEnabled(check);
 
-        btnRoomRate.setEnabled(check);
+        btnLogout.setEnabled(check);
         //  btnServices.setEnabled(check);
         //  btnBill.setEnabled(check);
         //    btnSearchRoom.setEnabled(check);
@@ -93,6 +90,7 @@ public class Main_menu extends javax.swing.JFrame {
         btnBill.setEnabled(check);
         btnSearchRoom.setEnabled(check);
         btnChangeProfile.setEnabled(check);
+        btnLogout.setEnabled(check);
     }
 
     @SuppressWarnings("unchecked")
@@ -108,7 +106,6 @@ public class Main_menu extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         btnRooms = new javax.swing.JButton();
         btnRoomType = new javax.swing.JButton();
-        btnRoomRate = new javax.swing.JButton();
         btnCustomers = new javax.swing.JButton();
         btnServices = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -119,6 +116,7 @@ public class Main_menu extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         btnChangeProfile = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
         btnEmployee = new javax.swing.JButton();
         cEditable = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -252,21 +250,6 @@ public class Main_menu extends javax.swing.JFrame {
         });
         jPanel5.add(btnRoomType, new java.awt.GridBagConstraints());
 
-        btnRoomRate.setFont(new java.awt.Font(".VnBook-Antiqua", 1, 14)); // NOI18N
-        btnRoomRate.setForeground(new java.awt.Color(0, 0, 255));
-        btnRoomRate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/room_rate.png"))); // NOI18N
-        btnRoomRate.setText("Room Rate");
-        btnRoomRate.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnRoomRate.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/room_rate_rolled.png"))); // NOI18N
-        btnRoomRate.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
-        btnRoomRate.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnRoomRate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRoomRateActionPerformed(evt);
-            }
-        });
-        jPanel5.add(btnRoomRate, new java.awt.GridBagConstraints());
-
         btnCustomers.setFont(new java.awt.Font(".VnBook-Antiqua", 1, 14)); // NOI18N
         btnCustomers.setForeground(new java.awt.Color(0, 0, 255));
         btnCustomers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/customers.png"))); // NOI18N
@@ -390,6 +373,21 @@ public class Main_menu extends javax.swing.JFrame {
         });
         jPanel4.add(btnChangeProfile, java.awt.BorderLayout.WEST);
 
+        btnLogout.setFont(new java.awt.Font(".VnBook-Antiqua", 1, 14)); // NOI18N
+        btnLogout.setForeground(new java.awt.Color(0, 0, 255));
+        btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logout1.png"))); // NOI18N
+        btnLogout.setText("Log Out");
+        btnLogout.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnLogout.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/logout2.png"))); // NOI18N
+        btnLogout.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        btnLogout.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+        jPanel4.add(btnLogout, java.awt.BorderLayout.EAST);
+
         btnEmployee.setFont(new java.awt.Font(".VnBook-Antiqua", 1, 14)); // NOI18N
         btnEmployee.setForeground(new java.awt.Color(0, 0, 255));
         btnEmployee.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Employee1.png"))); // NOI18N
@@ -403,7 +401,7 @@ public class Main_menu extends javax.swing.JFrame {
                 btnEmployeeActionPerformed(evt);
             }
         });
-        jPanel4.add(btnEmployee, java.awt.BorderLayout.EAST);
+        jPanel4.add(btnEmployee, java.awt.BorderLayout.CENTER);
 
         jPanel1.add(jPanel4);
 
@@ -463,7 +461,7 @@ public class Main_menu extends javax.swing.JFrame {
 
         jMenu4.setText("Customer");
 
-        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, 0));
+        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem6.setText("View Customer");
         jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -472,7 +470,13 @@ public class Main_menu extends javax.swing.JFrame {
         });
         jMenu4.add(jMenuItem6);
 
+        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem7.setText("Export Report Customers");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem7);
 
         jMenuBar1.add(jMenu4);
@@ -596,10 +600,6 @@ public class Main_menu extends javax.swing.JFrame {
         jLabel1.setBackground(Color.blue);
     }//GEN-LAST:event_jPanel5MouseEntered
 
-    private void btnRoomRateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRoomRateActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnRoomRateActionPerformed
-
     private void btnEmptyRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmptyRoomActionPerformed
           cEditable.add(new EmptyRoomPanel(),"emp");
          cLayout.show(cEditable, "emp");
@@ -683,17 +683,28 @@ public class Main_menu extends javax.swing.JFrame {
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
-        Login frmLogin = new Login(objCon);
+        Login frmLogin = new Login();
         this.dispose();
         frmLogin.setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void menuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLogoutActionPerformed
         // TODO add your handling code here:
-        Login frmLogin = new Login(objCon);
+        Login frmLogin = new Login();
         this.dispose();
         frmLogin.setVisible(true);
     }//GEN-LAST:event_menuItemLogoutActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        CustomerDao cusdao=new CustomerDao();
+        cusdao.report();
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        Login frmLogin = new Login();
+        this.dispose();
+        frmLogin.setVisible(true);
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -725,7 +736,7 @@ public class Main_menu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main_menu(null, null, null, null).setVisible(true);
+                new Main_menu(null, null, null).setVisible(true);
             }
         });
     }
@@ -736,8 +747,8 @@ public class Main_menu extends javax.swing.JFrame {
     private javax.swing.JButton btnCustomers;
     private javax.swing.JButton btnEmployee;
     private javax.swing.JButton btnEmptyRoom;
+    private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnReservation;
-    private javax.swing.JButton btnRoomRate;
     private javax.swing.JButton btnRoomType;
     private javax.swing.JButton btnRooms;
     private javax.swing.JButton btnSearchRoom;

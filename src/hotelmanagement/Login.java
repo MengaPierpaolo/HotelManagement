@@ -5,7 +5,7 @@
  */
 package hotelmanagement;
 
-import connection.DbConnect1;
+import connection.DbConnect;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.Connection;
@@ -22,15 +22,16 @@ public class Login extends javax.swing.JFrame {
     ResultSet rs;
     boolean flag = true;
 
-    DbConnect1 objCon;
-
-    public Login(DbConnect1 objCon) {
+    public Login() {
         initComponents();
         this.setTitle("Login Form");
-        this.objCon = objCon;
+
         try {
-            con = objCon.getCon();
-            stmt = objCon.getSta();
+            DbConnect db = new DbConnect();
+            db.dbConect();
+            con = db.getCon();
+            stmt = db.getStsm();
+            
             rs = stmt.executeQuery("select * from Employee");
 
         } catch (Exception e) {
@@ -180,7 +181,7 @@ public class Login extends javax.swing.JFrame {
                 if (user.equalsIgnoreCase(rs.getString("UserName")) && (pass.equals(rs.getString("PassWord")))
                         && status.equalsIgnoreCase(rs.getString("Status"))) {
                     role = rs.getString("Role");
-                    Main_menu main_menu = new Main_menu(user, pass, role, objCon);
+                    Main_menu main_menu = new Main_menu(user, pass, role);
                     dispose();
                     JOptionPane.showMessageDialog(this, "Login is sucessfully!!!");
                     main_menu.setVisible(true);
@@ -262,7 +263,7 @@ public class Login extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login(null).setVisible(true);
+                new Login().setVisible(true);
             }
         });
     }
