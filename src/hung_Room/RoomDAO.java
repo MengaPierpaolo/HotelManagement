@@ -29,6 +29,7 @@ public class RoomDAO implements DAOConnection{
     private String roomTypeName;
     private double roomTypeRate;
     private String roomTypeNote;
+    private int roomTypeMaxCustomer;
     
     DbConnect db;
     Connection con;
@@ -42,8 +43,9 @@ public class RoomDAO implements DAOConnection{
     Vector<RoomTypeEntity> roomTypeEntityCollection;
 
     public RoomDAO() {
-        db = new DbConnect("sa", "");
-        db.createConnect();
+        db = new DbConnect();
+        db.dbConect();
+        con = db.getCon();
         st = db.getStsm();
         roomEntityCollection = new Vector<>();
         roomTypeEntityCollection = new Vector<>();
@@ -58,8 +60,8 @@ public class RoomDAO implements DAOConnection{
                 this.roomTypeName = rs.getString(2);
                 this.roomTypeRate = rs.getDouble(3);
                 this.roomTypeNote = rs.getString(4);
-                
-                roomTypeEntity = new RoomTypeEntity(roomTypeID, roomTypeName, roomTypeRate, roomTypeNote);
+                this.roomTypeMaxCustomer = rs.getInt(5);
+                roomTypeEntity = new RoomTypeEntity(roomTypeID, roomTypeName, roomTypeRate, roomTypeNote, roomTypeMaxCustomer);
                 roomTypeEntityCollection.add(roomTypeEntity);
             }
         } catch (Exception e) {
@@ -154,7 +156,31 @@ public class RoomDAO implements DAOConnection{
             e.printStackTrace();
         }
     }
-
+    
+    public Vector<Integer> getCollectionFromReversation() {
+        Vector vec = new Vector();
+        try {
+            sql = "select roomid from Reservation";
+            rs = st.executeQuery(sql);
+            while(rs.next()) {
+                vec.add(rs.getInt(1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return vec;
+    }
+    
+    
+    public void delete( int str ) {
+        try {
+            sql = "delete from rooms where roomid = "+ str;
+            st.executeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void delete() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
