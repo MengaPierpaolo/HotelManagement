@@ -224,7 +224,7 @@ public class RoomDiaglogUpdate extends javax.swing.JDialog implements CentralInt
         }
         getDataFromForm();
         roomEntity = new RoomEntity(roomID, roomName, roomTypeID, roomStatus);
-//        System.out.println("ID:"+ roomID +"\tName: "+ roomName+"\tTypeID:"+ roomTypeID +"\tSta: "+ roomStatus);
+        System.out.println("ID:"+ roomID +"\tName: "+ roomName+"\tTypeID:"+ roomTypeID +"\tSta: "+ roomStatus);
         
         roomDAO = new RoomDAO();
         roomDAO.update(roomEntity);
@@ -324,17 +324,17 @@ public class RoomDiaglogUpdate extends javax.swing.JDialog implements CentralInt
     }
     @Override
     public boolean checkEmptyField() {
-        if(txtRoomName.getText().isEmpty()) {
+        if(txtRoomName.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Name can not be blank");
             txtRoomName.grabFocus();
             return true;
         }
-        if(isExsitedName(txtRoomName.getText())) {
+        if(isExsitedName(txtRoomName.getText().trim())) {
             JOptionPane.showMessageDialog(this, "Name Existes!!!");
             txtRoomName.grabFocus();
             return true;
         }
-        if(txaStatus.getText().isEmpty()) {
+        if(txaStatus.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Status can not be blank");
             txaStatus.grabFocus();
             return true;

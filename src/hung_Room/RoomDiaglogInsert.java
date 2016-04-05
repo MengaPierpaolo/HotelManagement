@@ -287,17 +287,17 @@ public class RoomDiaglogInsert extends javax.swing.JDialog implements CentralInt
     
     @Override
     public boolean checkEmptyField() {
-        if(txtRoomName.getText().isEmpty()) {
+        if(txtRoomName.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Name can not be blank");
             txtRoomName.grabFocus();
             return true;
         }
-        if(isExsitedName(txtRoomName.getText())) {
+        if(isExsitedName(txtRoomName.getText().trim())) {
             JOptionPane.showMessageDialog(this, "Name Existes!!!");
             txtRoomName.grabFocus();
             return true;
         }
-        if(txaStatus.getText().isEmpty()) {
+        if(txaStatus.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Status can not be blank");
             txaStatus.grabFocus();
             return true;

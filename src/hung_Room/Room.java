@@ -32,7 +32,13 @@ public class Room extends javax.swing.JPanel implements CentralInterface{
     
     public Room() {
         initComponents();
-        roomListModel = new DefaultTableModel();
+        roomListModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int rows,int column){
+                return false;
+            }
+            
+        };
         
         header = new Vector();
         data = new Vector();
@@ -45,6 +51,15 @@ public class Room extends javax.swing.JPanel implements CentralInterface{
         roomListModel.setDataVector(data, header);
         tblRoomList.setModel(roomListModel);
         showData();
+    }
+    private boolean isRoomIDInReversation(int roomIDToDelete) {
+        Vector roomIDCollectionFromReversation = new RoomDAO().getCollectionFromReversation();
+        for(Object ID : roomIDCollectionFromReversation) {
+            if(roomIDToDelete == (int)ID) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -193,6 +208,11 @@ public class Room extends javax.swing.JPanel implements CentralInterface{
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon24/Iconic_26d4(0)_24.png"))); // NOI18N
         jButton4.setText("Delete");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
         jPanel2.add(jButton4);
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
@@ -236,7 +256,7 @@ public class Room extends javax.swing.JPanel implements CentralInterface{
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jTabbedPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+            .addComponent(jTabbedPane3)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -255,7 +275,7 @@ public class Room extends javax.swing.JPanel implements CentralInterface{
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tblRoom, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
+            .addComponent(tblRoom)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,6 +304,23 @@ public class Room extends javax.swing.JPanel implements CentralInterface{
         updateRoom.setVisible(true);
         showData();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        int rowToDelete = tblRoomList.getSelectedRow();
+        if(rowToDelete == -1) {
+            JOptionPane.showMessageDialog(this, "Need to chosse a row");
+            return;
+        }
+        int idToDelete = (int)tblRoomList.getValueAt(rowToDelete, 0);
+        if(isRoomIDInReversation(idToDelete)) {
+            JOptionPane.showMessageDialog(this, "Can not delete, in used");
+            return;
+        }
+        roomDAO = new RoomDAO();
+        roomDAO.delete(idToDelete);
+        showData();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
